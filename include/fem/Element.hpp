@@ -7,7 +7,7 @@
 
 struct Tri3 {
 	std::size_t id;
-	std::array<std::size_t, 3> nodes;
+	std::array<Node, 3> nodes;
 };
 
 #endif
