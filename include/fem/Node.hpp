@@ -1,7 +1,7 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include <Eigen/Dense>
+#include "Libraries.hpp"
 
 /*
  * Data structure representing a node.
