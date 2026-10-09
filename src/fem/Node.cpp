@@ -1,7 +1,5 @@
 #include "../../include/fem/Node.hpp"
 
 
-std::size_t Node::index = 0;
-
-Node::Node(const float& x, const float& y) : id(index++), 
+Node::Node(std::size_t id, const float x, const float y) : id(id), 
 coordinates(x, y) {}

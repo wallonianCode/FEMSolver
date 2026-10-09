@@ -9,13 +9,9 @@
  */
 struct Node 
 {
-private:
-	static std::size_t index;
-
-public:
-	std::size_t id;
-	Eigen::Vector2f coordinates;	
-	Node(const float& x, const float& y);
+ 	std::size_t id;
+	Eigen::Vector2d coordinates;	
+	Node(std::size_t id, const float x, const float y);
 };
 
 #endif

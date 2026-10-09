@@ -5,7 +5,6 @@
 #include "Libraries.hpp"
 
 
-//TODO is there any advantage in describing the arguments of a function as const 
 //if these arguments are directly given to non-const variables?
 struct IsotropicLinearElasticMaterial
 {
@@ -15,8 +14,7 @@ struct IsotropicLinearElasticMaterial
     IsotropicLinearElasticMaterial(
         const double E,
         const double nu
-    )
-
+    );
 };
 
 namespace materials
@@ -42,7 +40,7 @@ public:
 	//const makes the interface usable with const objects 
 	virtual Eigen::Matrix3d get_constitutive_matrix() const = 0;
 
-	//if derived objects might be destroyed through a base-class pointer TODO why?
+	//if derived objects might be destroyed through a base-class pointer
 	virtual ~LinearElastic2D() = default;
 };
 

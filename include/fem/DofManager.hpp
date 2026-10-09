@@ -1,4 +1,6 @@
 #ifndef DOFMANAGER_H
+#define DOFMANAGER_H
+
 #include "Node.hpp"
 
 

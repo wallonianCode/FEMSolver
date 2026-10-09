@@ -1,13 +1,16 @@
 #ifndef ELEMENT_H
 #define ELEMENT_H
 
-#include "Node.hpp"
 #include <array>
 
 
 struct Tri3 {
 	std::size_t id;
-	std::array<Node, 3> nodes;
+	//store the ids only instead of copies of the nodes.
+	//Since the mesh is going to own all the nodes, the nodes need to be updated there.
+	std::array<std::size_t, 3> node_ids; 
+private:
+
 };
 
 #endif
