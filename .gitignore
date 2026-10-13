@@ -72,6 +72,7 @@ Local dependencies and configuration
 Ignore local Eigen copies if stored in this directory:
 
 third_party/eigen/
+third_party/eigen-*/
 
 
 Local environment-specific configuration
