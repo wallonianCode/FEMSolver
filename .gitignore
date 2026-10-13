@@ -1,0 +1,81 @@
+==============================
+
+Compiled objects and executables
+
+==============================
+
+*.o
+*.obj
+*.exe
+*.out
+
+==============================
+
+Build directories
+
+==============================
+
+build/
+cmake-build-*/
+
+==============================
+
+Debugging and profiling output
+
+==============================
+
+*.dSYM/
+*.gcda
+*.gcno
+.profraw
+core
+core.
+
+==============================
+
+IDE and editor files
+
+==============================
+
+.vscode/
+.idea/
+*.suo
+*.user
+*.sln.docstates
+
+==============================
+
+Operating system files
+
+==============================
+
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+==============================
+
+Temporary files
+
+==============================
+
+*.tmp
+*.bak
+*~
+
+==============================
+
+Local dependencies and configuration
+
+==============================
+
+Ignore local Eigen copies if stored in this directory:
+
+third_party/eigen/
+
+
+Local environment-specific configuration
+
+.env
+.env.*
+!.env.example
