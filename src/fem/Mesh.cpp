@@ -42,14 +42,21 @@ std::size_t Mesh::add_tri3(
 /*********************************************************************************
                             ACCESSORS
  *********************************************************************************/
-
 const Node& Mesh::node(std::size_t index) const 
 {
+    if (index >= nodes_.size())
+    {
+        throw std::out_of_range("Node index is out of bounds.");
+    }
     return nodes_[index];
 }
 
 const Tri3& Mesh::element(std::size_t index) const 
 {
+    if (index >= elements_.size())
+    {
+        throw std::out_of_range("Element index is out of bounds.");
+    }
     return elements_[index];
 }
 
@@ -66,12 +73,27 @@ std::size_t Mesh::num_elements() const
 /********************************************************************************
                             VALIDATION
  *********************************************************************************/
-bool Mesh::validate(std::string& error, double tolerance) const 
+//TODO test for duplicate node indices in an element
+ bool Mesh::validate(std::string& error, double tolerance) const 
 {
   
    std::ostringstream message(std::ios_base::out);
 
    error.clear();
+//check for duplicate nodes
+   for (std::size_t i = 0; i < nodes_.size(); ++i)
+   {
+       for (std::size_t j = i + 1; j < nodes_.size(); ++j)
+       {
+           if (nodes_[i].coordinates == nodes_[j].coordinates)
+           {
+               message << "Duplicate nodes found: " << nodes_[i] << " and " << nodes_[j] << '\n';
+               error = message.str();
+               return false;
+           }
+       }
+   }
+   //Element geometry and connectivity validation
    for (const Tri3& elem : elements_)
     {
         // Validate element connectivity before accessing nodes.
@@ -98,9 +120,6 @@ bool Mesh::validate(std::string& error, double tolerance) const
                 error = message.str();
                 return false;
             }
-
-
-
         }
 
 
@@ -111,6 +130,7 @@ bool Mesh::validate(std::string& error, double tolerance) const
 
 
         // Check validity
+        // TODO distinguish between triangles with collinear nodes and triangles with coincident nodes
         if (!Tri3::is_valid(n0, n1, n2, tolerance))
         {
             message << "Invalid geometry in " << elem
