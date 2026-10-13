@@ -3,6 +3,9 @@
 
 #include <vector>
 #include <cstddef>
+#include <exception>
+#include <string>
+#include <sstream>
 
 #include "Node.hpp"
 #include "Element.hpp"
@@ -25,15 +28,21 @@ public:
         std::size_t n2
     );
 
-    // Read-only access
+    
+    // Read-only access (do not allow arbitrary code to accidentally
+    // change a node's coordinates or an element's connectivity while 
+    // the stiffness matrices are being computed)
     const Node& node(std::size_t index) const;
     const Tri3& element(std::size_t index) const;
 
     std::size_t num_nodes() const;
     std::size_t num_elements() const;
 
-    // Validate connectivity and geometry.
-    void validate() const;
+    // Mesh's structural & geometric integrity
+    bool validate(std::string& error, double tolerance) const;
+
+    // Mesh's suitability for analysis  
+    bool is_valid_for_analysis(std::string& error, double tolerance) const;
 };
 
 #endif

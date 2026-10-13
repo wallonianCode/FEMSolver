@@ -2,6 +2,8 @@
 #define NODE_H
 
 #include "Libraries.hpp"
+#include <cmath>
+#include <iostream>
 
 /*
  * Data structure representing a node.
@@ -12,6 +14,13 @@ struct Node
  	std::size_t id;
 	Eigen::Vector2d coordinates;	
 	Node(std::size_t id, const float x, const float y);
+	//check coordinates
+	static bool is_valid(const Node& node);
+
+	friend std::ostream& operator<< (std::ostream& stream, const Node& node);
+	
 };
+
+std::ostream& operator<< (std::ostream& stream, const Node& node);
 
 #endif
