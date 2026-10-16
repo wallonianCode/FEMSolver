@@ -60,7 +60,7 @@ double Tri3::quality(const Node &node1, const Node &node2, const Node &node3)
         return 0.0;
     }
    
-    return area / std::pow(*std::max_element(lengths.begin(), lengths.end()), 2);
+    return 2*area / std::pow(*std::max_element(lengths.begin(), lengths.end()), 2);
     //return 4.0 * std::sqrt(3.0) * area / (l1 * l1 + l2 * l2 + l3 * l3);
 }
 

@@ -6,7 +6,7 @@
 
 TEST(NodeTests, StoresIdAndCoordinates)
 {
-    const Node node(3, 1.5d, -2.0d);
+    const Node node(3, 1.5, -2.0);
 
     EXPECT_EQ(node.id, 3);
     EXPECT_DOUBLE_EQ(node.coordinates[0], 1.5);
@@ -15,7 +15,7 @@ TEST(NodeTests, StoresIdAndCoordinates)
 
 TEST(NodeTests, AcceptsFiniteCoordinates)
 {
-    const Node node(0, 1.0d, 2.0d);
+    const Node node(0, 1.0, 2.0);
 
     EXPECT_TRUE(Node::is_valid(node));
 }
@@ -31,7 +31,7 @@ TEST(NodeTests, RejectsNonFiniteCoordinates)
 TEST(NodeTests, RejectsInfiniteCoordinates)
 {
     const double inf = std::numeric_limits<double>::infinity();
-    const Node node(0, 1.0d, static_cast<double>(inf));
+    const Node node(0, 1.0, static_cast<double>(inf));
 
     EXPECT_FALSE(Node::is_valid(node));
 }

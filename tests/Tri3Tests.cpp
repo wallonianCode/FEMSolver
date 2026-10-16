@@ -21,7 +21,7 @@ TEST(Tri3Tests, ValidityOfEquilateralTriangle)
 {
     const Node n0(0, 0.0f, 0.0f);
     const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
+    const Node n2(2, 0.5f, (double)std::sqrt(3.0) / 2.0);
     EXPECT_TRUE(Tri3::is_valid(n0, n1, n2, VERY_HIGH_QUALITY));
 }
 
@@ -75,7 +75,7 @@ TEST(Tri3Tests, EquilateralTriangleIsValidForHighQUALITY)
 {
     const Node n0(0, 0.0f, 0.0f);
     const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
+    const Node n2(2, 0.5f, (double) std::sqrt(3.0) / 2.0);
     EXPECT_TRUE(Tri3::is_valid(n0, n1, n2, VERY_HIGH_QUALITY));
 }
 
@@ -85,11 +85,11 @@ TEST(Tri3Tests, SameTriangleScaledAreValidForSameQUALITY)
 {
     const Node n0(0, 0.0f, 0.0f);
     const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
+    const Node n2(2, 0.5f, (double) std::sqrt(3.0) / 2.0);
 
     const Node n3(3, 0.0f, 0.0f);
     const Node n4(4, 2.0f, 0.0f);
-    const Node n5(5, 1.0f, std::sqrt(3.0));
+    const Node n5(5, 1.0f, (double) std::sqrt(3.0));
 
     EXPECT_TRUE(Tri3::is_valid(n0, n1, n2, HIGH_QUALITY));
     EXPECT_TRUE(Tri3::is_valid(n3, n4, n5, HIGH_QUALITY));

@@ -19,7 +19,8 @@ private:
 
 public:
     // Add a node and return its internal index.
-    std::size_t add_node(double x, double y);
+    std::size_t add_node(const double x, const double y);
+
 
     // Add a triangle using three node indices.
     std::size_t add_tri3(

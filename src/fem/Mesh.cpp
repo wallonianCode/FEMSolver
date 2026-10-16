@@ -4,12 +4,13 @@
 /*********************************************************************************
                             MODIFIERS
  *********************************************************************************/
-std::size_t Mesh::add_node(double x, double y) 
+std::size_t Mesh::add_node(const double x, const double y) 
 {
     const std::size_t node_id = nodes_.size();
     nodes_.push_back(Node(node_id, x, y));
     return node_id;   
 }
+
 
 
 std::size_t Mesh::add_tri3(

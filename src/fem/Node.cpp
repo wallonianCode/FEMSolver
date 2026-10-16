@@ -1,7 +1,7 @@
 #include "../../include/fem/Node.hpp"
 
 
-Node::Node(std::size_t id, const float x, const float y) : id(id), 
+Node::Node(std::size_t id, const double x, const double y) : id(id), 
 coordinates(x, y) {}
 
 

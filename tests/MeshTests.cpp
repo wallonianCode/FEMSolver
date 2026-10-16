@@ -1,4 +1,10 @@
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
+#include <cmath>
+#include <cstddef>
+#include <limits>
+#include <stdexcept>
+#include <string>
 #include "../include/fem/Node.hpp"
 #include "../include/fem/Element.hpp"
 #include "../include/fem/Mesh.hpp"
@@ -11,16 +17,10 @@ const double VERY_HIGH_QUALITY = 0.5;
 TEST(MeshTests, CanAddNodesAndElements)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-
-    const Tri3 t0(0, n0.id, n1.id, n2.id);
-    mesh.add_element(t0);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(1.0f, 0.0f);
+    const std::size_t n2 = mesh.add_node(0.5f, std::sqrt(3.0) / 2.0);
+    mesh.add_tri3(n0, n1, n2);
     EXPECT_EQ(mesh.num_nodes(), 3);
     EXPECT_EQ(mesh.num_elements(), 1);
 }
@@ -29,36 +29,24 @@ TEST(MeshTests, CanAddNodesAndElements)
 TEST(MeshTests, AccessElementWithValidNodeIndex)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-
-    const Tri3 t0(0, n0.id, n1.id, n2.id);
-    mesh.add_element(t0);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(1.0f, 0.0f);
+    const std::size_t n2 = mesh.add_node(0.5f, std::sqrt(3.0) / 2.0);
+    mesh.add_tri3(n0, n1, n2);
     const Tri3& retrieved_element = mesh.element(0);
-    EXPECT_EQ(retrieved_element.node_ids[0], n0.id);
-    EXPECT_EQ(retrieved_element.node_ids[1], n1.id);
-    EXPECT_EQ(retrieved_element.node_ids[2], n2.id);
+    EXPECT_EQ(retrieved_element.node_ids[0], n0);
+    EXPECT_EQ(retrieved_element.node_ids[1], n1);
+    EXPECT_EQ(retrieved_element.node_ids[2], n2);
 }
 
 
 TEST(MeshTests, AccessElementWithInvalidNodeIndex)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-
-    const Tri3 t0(0, n0.id, n1.id, n2.id);
-    mesh.add_element(t0);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(1.0f, 0.0f);
+    const std::size_t n2 = mesh.add_node(0.5f, std::sqrt(3.0) / 2.0);
+    mesh.add_tri3(n0, n1, n2);
     EXPECT_THROW(mesh.element(1), std::out_of_range);
 }
 
@@ -66,16 +54,10 @@ TEST(MeshTests, AccessElementWithInvalidNodeIndex)
 TEST(MeshTests, ValidateMeshWithValidElements)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-
-    const Tri3 t0(0, n0.id, n1.id, n2.id);
-    mesh.add_element(t0);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(1.0f, 0.0f);
+    const std::size_t n2 = mesh.add_node(0.5f, std::sqrt(3.0) / 2.0);
+    mesh.add_tri3(n0, n1, n2);
     std::string error;
     EXPECT_TRUE(mesh.validate(error, LOW_QUALITY));
 }
@@ -84,16 +66,10 @@ TEST(MeshTests, ValidateMeshWithValidElements)
 TEST(MeshTests, ValidateMeshWithInvalidElements)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, 1.0f, 1.0f);
-    const Node n2(2, 2.0f, 2.0f); // Colinear nodes
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-
-    const Tri3 t0(0, n0.id, n1.id, n2.id);
-    mesh.add_element(t0);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(1.0f, 1.0f);
+    const std::size_t n2 = mesh.add_node(2.0f, 2.0f); // Colinear nodes
+    mesh.add_tri3(n0, n1, n2);
     std::string error;
     EXPECT_FALSE(mesh.validate(error, LOW_QUALITY));
     EXPECT_FALSE(error.empty());
@@ -104,16 +80,10 @@ TEST(MeshTests, ValidateMeshWithInvalidElements)
 TEST(MeshTests, ValidateMeshWithDuplicateNodes)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 1.0f, 0.0f); // Duplicate node
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-
-    const Tri3 t0(0, n0.id, n1.id, n2.id);
-    mesh.add_element(t0);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(1.0f, 0.0f);
+    const std::size_t n2 = mesh.add_node(1.0f, 0.0f); // Duplicate node
+    mesh.add_tri3(n0, n1, n2);
     std::string error;
     EXPECT_FALSE(mesh.validate(error, LOW_QUALITY));
     EXPECT_FALSE(error.empty());
@@ -124,18 +94,11 @@ TEST(MeshTests, ValidateMeshWithDuplicateNodes)
 TEST(MeshTests, ValidateMeshWithDuplicateElements)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-
-    const Tri3 t0(0, n0.id, n1.id, n2.id);
-    const Tri3 t1(1, n0.id, n1.id, n2.id); // Duplicate triangle
-    mesh.add_element(t0);
-    mesh.add_element(t1);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(1.0f, 0.0f);
+    const std::size_t n2 = mesh.add_node(0.5f, std::sqrt(3.0) / 2.0);
+    mesh.add_tri3(n0, n1, n2);
+    mesh.add_tri3(n0, n1, n2);
     std::string error;
     EXPECT_FALSE(mesh.validate(error, LOW_QUALITY));
     EXPECT_FALSE(error.empty());
@@ -146,16 +109,10 @@ TEST(MeshTests, ValidateMeshWithDuplicateElements)
 TEST(MeshTests, ValidateMeshWithInvalidNodeCoordinates)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, std::numeric_limits<double>::infinity(), 0.0f); // Invalid coordinate
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-
-    const Tri3 t0(0, n0.id, n1.id, n2.id);
-    mesh.add_element(t0);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(std::numeric_limits<double>::infinity(), 0.0f); // Invalid coordinate
+    const std::size_t n2 = mesh.add_node(0.5f, std::sqrt(3.0) / 2.0);
+    mesh.add_tri3(n0, n1, n2);
     std::string error;
     EXPECT_FALSE(mesh.validate(error, LOW_QUALITY));
     EXPECT_FALSE(error.empty());
@@ -166,16 +123,10 @@ TEST(MeshTests, ValidateMeshWithInvalidNodeCoordinates)
 TEST(MeshTests, ValidateMeshWithInvalidElementQuality)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 1.0f, 1e-6f); // Very narrow triangle
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-
-    const Tri3 t0(0, n0.id, n1.id, n2.id);
-    mesh.add_element(t0);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(1.0f, 0.0f);
+    const std::size_t n2 = mesh.add_node(1.0f, 1e-6f); // Very narrow triangle
+    mesh.add_tri3(n0, n1, n2);
     std::string error;
     EXPECT_FALSE(mesh.validate(error, LOW_QUALITY));
     EXPECT_FALSE(error.empty());
@@ -186,20 +137,12 @@ TEST(MeshTests, ValidateMeshWithInvalidElementQuality)
 TEST(MeshTests, ValidateMeshWithMultipleElements)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
-    const Node n3(3, 1.5f, std::sqrt(3.0) / 2.0);
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-    mesh.add_node(n3);
-
-    const Tri3 t0(0, n0.id, n1.id, n2.id);
-    const Tri3 t1(1, n1.id, n3.id, n2.id);
-    mesh.add_element(t0);
-    mesh.add_element(t1);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(1.0f, 0.0f);
+    const std::size_t n2 = mesh.add_node(0.5f, std::sqrt(3.0) / 2.0);
+    const std::size_t n3 = mesh.add_node(1.5f, std::sqrt(3.0) / 2.0);
+    mesh.add_tri3(n0, n1, n2);
+    mesh.add_tri3(n1, n3, n2);
     std::string error;
     EXPECT_TRUE(mesh.validate(error, LOW_QUALITY));
     EXPECT_TRUE(error.empty());
@@ -209,22 +152,13 @@ TEST(MeshTests, ValidateMeshWithMultipleElements)
 TEST(MeshTests, ValidateMeshWithInvalidElementInMultipleElements)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
-    const Node n3(3, 1.5f, std::sqrt(3.0) / 2.0);
-    const Node n4(4, 2.5f, std::sqrt(3.0) / 2.0); // Invalid node for the second triangle
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-    mesh.add_node(n3);
-    mesh.add_node(n4);
-
-    const Tri3 t0(0, n0.id, n1.id, n2.id);
-    const Tri3 t1(1, n2.id, n4.id, n3.id); // Invalid triangle
-    mesh.add_element(t0);
-    mesh.add_element(t1);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(1.0f, 0.0f);
+    const std::size_t n2 = mesh.add_node(0.5f, std::sqrt(3.0) / 2.0);
+    const std::size_t n3 = mesh.add_node(1.5f, std::sqrt(3.0) / 2.0);
+    const std::size_t n4 = mesh.add_node(2.5f, std::sqrt(3.0) / 2.0); // Invalid node for the second triangle
+    mesh.add_tri3(n0, n1, n2);
+    mesh.add_tri3(n2, n4, n3);
     std::string error;
     EXPECT_FALSE(mesh.validate(error, LOW_QUALITY));
     EXPECT_FALSE(error.empty());
@@ -235,16 +169,10 @@ TEST(MeshTests, ValidateMeshWithInvalidElementInMultipleElements)
 TEST(MeshTests, ValidateMeshWithInvalidNodeIndexInElement)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-
-    const Tri3 t0(0, n0.id, n1.id, 999); // Invalid node index
-    mesh.add_element(t0);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(1.0f, 0.0f);
+    const std::size_t n2 = mesh.add_node(0.5f, std::sqrt(3.0) / 2.0);
+    mesh.add_tri3(n0, n1, 999); // Invalid node index
     std::string error;
     EXPECT_FALSE(mesh.validate(error, LOW_QUALITY));
     EXPECT_FALSE(error.empty());
@@ -255,16 +183,10 @@ TEST(MeshTests, ValidateMeshWithInvalidNodeIndexInElement)
 TEST(MeshTests, ValidateMeshWithDuplicateNodeIndicesInElement)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-
-    const Tri3 t0(0, n0.id, n1.id, n1.id); // Duplicate node index
-    mesh.add_element(t0);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(1.0f, 0.0f);
+    const std::size_t n2 = mesh.add_node(0.5f, std::sqrt(3.0) / 2.0);
+    mesh.add_tri3(n0, n1, n1);
     std::string error;
     EXPECT_FALSE(mesh.validate(error, LOW_QUALITY));
     EXPECT_FALSE(error.empty());
@@ -275,16 +197,10 @@ TEST(MeshTests, ValidateMeshWithDuplicateNodeIndicesInElement)
 TEST(MeshTests, ValidateMeshWithInvalidNodeCoordinatesInElement)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, std::numeric_limits<double>::infinity(), 0.0f); // Invalid coordinate
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-
-    const Tri3 t0(0, n0.id, n1.id, n2.id);
-    mesh.add_element(t0);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(std::numeric_limits<double>::infinity(), 0.0f); // Invalid coordinate
+    const std::size_t n2 = mesh.add_node(0.5f, std::sqrt(3.0) / 2.0);
+    mesh.add_tri3(n0, n1, n2);
     std::string error;
     EXPECT_FALSE(mesh.validate(error, LOW_QUALITY));
     EXPECT_FALSE(error.empty());
@@ -295,22 +211,13 @@ TEST(MeshTests, ValidateMeshWithInvalidNodeCoordinatesInElement)
 TEST(MeshTests, ValidateMeshWithInvalidElementQualityInMultipleElements)
 {
     Mesh mesh;
-    const Node n0(0, 0.0f, 0.0f);
-    const Node n1(1, 1.0f, 0.0f);
-    const Node n2(2, 0.5f, std::sqrt(3.0) / 2.0);
-    const Node n3(3, 1.5f, std::sqrt(3.0) / 2.0);
-    const Node n4(4, 1.5f, 1e-6f); // Very narrow triangle
-    mesh.add_node(n0);
-    mesh.add_node(n1);
-    mesh.add_node(n2);
-    mesh.add_node(n3);
-    mesh.add_node(n4);
-
-    const Tri3 t0(0, n0.id, n1.id, n2.id);
-    const Tri3 t1(1, n1.id, n4.id, n3.id); // Invalid triangle
-    mesh.add_element(t0);
-    mesh.add_element(t1);
-
+    const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
+    const std::size_t n1 = mesh.add_node(1.0f, 0.0f);
+    const std::size_t n2 = mesh.add_node(0.5f, std::sqrt(3.0) / 2.0);
+    const std::size_t n3 = mesh.add_node(1.5f, std::sqrt(3.0) / 2.0);
+    const std::size_t n4 = mesh.add_node(1.5f, 1e-6f); // Very narrow triangle
+    mesh.add_tri3(n0, n1, n2);
+    mesh.add_tri3(n1, n4, n3);
     std::string error;
     EXPECT_FALSE(mesh.validate(error, LOW_QUALITY));
     EXPECT_FALSE(error.empty());
