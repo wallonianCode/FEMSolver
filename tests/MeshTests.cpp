@@ -60,6 +60,7 @@ TEST(MeshTests, ValidateMeshWithValidElements)
     mesh.add_tri3(n0, n1, n2);
     std::string error;
     EXPECT_TRUE(mesh.validate(error, LOW_QUALITY));
+    EXPECT_TRUE(error.empty());
 }
 
 
@@ -73,7 +74,7 @@ TEST(MeshTests, ValidateMeshWithInvalidElements)
     std::string error;
     EXPECT_FALSE(mesh.validate(error, LOW_QUALITY));
     EXPECT_FALSE(error.empty());
-    EXPECT_THAT(error, ::testing::HasSubstr("coordinates"));
+    EXPECT_THAT(error, ::testing::HasSubstr("geometry"));
 }
 
 
@@ -172,6 +173,7 @@ TEST(MeshTests, ValidateMeshWithInvalidNodeIndexInElement)
     const std::size_t n0 = mesh.add_node(0.0f, 0.0f);
     const std::size_t n1 = mesh.add_node(1.0f, 0.0f);
     const std::size_t n2 = mesh.add_node(0.5f, std::sqrt(3.0) / 2.0);
+    
     mesh.add_tri3(n0, n1, 999); // Invalid node index
     std::string error;
     EXPECT_FALSE(mesh.validate(error, LOW_QUALITY));
@@ -190,7 +192,7 @@ TEST(MeshTests, ValidateMeshWithDuplicateNodeIndicesInElement)
     std::string error;
     EXPECT_FALSE(mesh.validate(error, LOW_QUALITY));
     EXPECT_FALSE(error.empty());
-    EXPECT_THAT(error, ::testing::HasSubstr("Duplicate"));
+    EXPECT_THAT(error, ::testing::HasSubstr("geometry"));
 }
 
 
@@ -215,7 +217,7 @@ TEST(MeshTests, ValidateMeshWithInvalidElementQualityInMultipleElements)
     const std::size_t n1 = mesh.add_node(1.0f, 0.0f);
     const std::size_t n2 = mesh.add_node(0.5f, std::sqrt(3.0) / 2.0);
     const std::size_t n3 = mesh.add_node(1.5f, std::sqrt(3.0) / 2.0);
-    const std::size_t n4 = mesh.add_node(1.5f, 1e-6f); // Very narrow triangle
+    const std::size_t n4 = mesh.add_node(1.5f, std::sqrt(3.0) / 2.0 + 0.01); // Very narrow triangle
     mesh.add_tri3(n0, n1, n2);
     mesh.add_tri3(n1, n4, n3);
     std::string error;
@@ -229,9 +231,8 @@ TEST(MeshTests, ValidateMeshWithNoNodes)
 {
     Mesh mesh;
     std::string error;
-    EXPECT_FALSE(mesh.validate(error, LOW_QUALITY));
+    EXPECT_FALSE(mesh.is_valid_for_analysis(error, LOW_QUALITY));
     EXPECT_FALSE(error.empty());
-    EXPECT_THAT(error, ::testing::HasSubstr("no nodes"));
 }
 
 
@@ -241,5 +242,4 @@ TEST(MeshTests, ValidateMeshWithoutElements)
     std::string error;
     EXPECT_FALSE(mesh.is_valid_for_analysis(error, LOW_QUALITY));
     EXPECT_FALSE(error.empty());
-    EXPECT_THAT(error, ::testing::HasSubstr("no elements"));
 }

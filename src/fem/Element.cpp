@@ -30,6 +30,7 @@ double Tri3::get_area(const Node& node1, const Node& node2, const Node& node3)
         (x2 - x1) * (y3 - y1)
       - (y2 - y1) * (x3 - x1);
 
+
     return 0.5 * std::abs(double_area);
 }
 

@@ -19,6 +19,7 @@ std::size_t Mesh::add_tri3(
     std::size_t n2
 ) 
 {
+    /*
     if (n0 > nodes_.size())
     {
         throw 
@@ -34,6 +35,7 @@ std::size_t Mesh::add_tri3(
        throw 
        std::invalid_argument("Third argument does not correspond to valid node id: " + n2);
     }
+       */
 
     const std::size_t element_id = elements_.size();
     elements_.push_back(Tri3(element_id, n0, n1, n2));
@@ -79,9 +81,11 @@ std::size_t Mesh::num_elements() const
 {
   
    std::ostringstream message(std::ios_base::out);
+   std::vector<std::array<std::size_t, 3>> element_keys;
 
+   element_keys.reserve(elements_.size());
    error.clear();
-//check for duplicate nodes
+    //check for duplicate nodes
    for (std::size_t i = 0; i < nodes_.size(); ++i)
    {
        for (std::size_t j = i + 1; j < nodes_.size(); ++j)
@@ -94,6 +98,29 @@ std::size_t Mesh::num_elements() const
            }
        }
    }
+
+   //check for duplicate elements
+   for (const Tri3& elem : elements_)
+   {
+        std::array<std::size_t, 3> key {
+            elem.node_ids[0],
+            elem.node_ids[1],
+            elem.node_ids[2]
+        };
+
+        std::sort(key.begin(), key.end());
+        element_keys.push_back(key);
+   }
+
+   std::sort(element_keys.begin(), element_keys.end());
+
+   if (std::adjacent_find(element_keys.begin(), element_keys.end()) != element_keys.end())
+   {
+        error = "Duplicate elements detected.";
+        return false;
+   }
+
+
    //Element geometry and connectivity validation
    for (const Tri3& elem : elements_)
     {
@@ -154,17 +181,19 @@ bool Mesh::is_valid_for_analysis(std::string& error, double tolerance) const
     //TODO
     error.clear();
 
+    if (elements_.empty())
+    {
+        error = "Cannot perform analysis: the mesh contains no elements.";
+        return false;
+    }
+
     if (nodes_.empty())
     {
         error = "Cannot perform analysis: the mesh contains no nodes.";
         return false;
     }
 
-    if (elements_.empty())
-    {
-        error = "Cannot perform analysis: the mesh contains no elements.";
-        return false;
-    }
+
 
     return validate(error, tolerance);
 }

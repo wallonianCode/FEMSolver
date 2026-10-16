@@ -6,6 +6,7 @@
 #include <exception>
 #include <string>
 #include <sstream>
+#include <algorithm>
 
 #include "Node.hpp"
 #include "Element.hpp"
