@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(MyFEM LANGUAGES CXX)
+project(FEMSolver LANGUAGES CXX)
 
 # Compile C++ code using the C++20 language standard
 set(CMAKE_CXX_STANDARD 20)
@@ -33,13 +33,28 @@ enable_testing()
 add_library(FEM 
             src/fem/Node.cpp
             src/fem/Element.cpp
-            src/fem/Mesh.cpp)
+            src/fem/Mesh.cpp
+            src/fem/boundary/BoundaryCondition.cpp
+            src/fem/Material.cpp
+            src/fem/DofManager.cpp)
 
 # Let the FEM implementation files find their headers and propagates the include 
 # directories to the test targets that link against FEM
 target_include_directories(FEM PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/fem
+)
+
+# W4: Enable all warnings, including level 4 warnings, which are the most verbose and include warnings about code that is not necessarily incorrect but may indicate potential issues or bad practices.
+# WX: Treat all warnings as errors, which means that if the compiler generates any warnings, the build will fail. This is useful for enforcing strict code quality standards and ensuring that all warnings are addressed before the code is considered complete.
+#-Werror can make builds fail after compiler upgrades introduce new warnings, so it is not used in production code.
+
+#-Wall: Enable all the commonly used warning messages that are considered important for catching potential issues in the code.
+#-Wextra: Enable additional warning messages that are not included in -Wall but are still useful for catching potential issues.
+#-Wpedantic: Enforce strict compliance with the C++ standard and generate warnings for any code that does not conform to the standard. This can help catch potential issues related to non-standard code or compiler-specific extensions.
+target_compile_options(FEM PRIVATE 
+    $<$<CXX_COMPILER_ID:MSVC>:/W4>
+    $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic>
 )
 
 # Defining build targets
@@ -57,6 +72,8 @@ target_link_libraries(Tri3Tests PRIVATE FEM GTest::gtest_main)
 add_executable(MeshTests tests/MeshTests.cpp)
 target_link_libraries(MeshTests PRIVATE FEM GTest::gmock_main)
 
+add_executable(solver src/main.cpp)
+target_link_libraries(solver PRIVATE FEM) #one shared definition of the FEM library is linked to the solver executable
 # Register individual GoogleTest cases with CTest
 include(GoogleTest)
 
@@ -79,9 +96,15 @@ gtest_discover_tests(MeshTests)
     generate the build files in the build directory.
 
     --> to be run again every time you change the CMakeList.txt file
+
+    explicitely select GCC and GNU Makefiles: 
+
+        cmake -S . -B build-gcc -G "MinGW Makefiles" 
+        -DCMAKE_CXX_COMPILER="C:/msys64/ucrt64/bin/g++.exe"
+
 ]]
 
-# cmake --build build --config Debug
+# cmake --build build-gcc --config Debug -
 #[[
     compiles the targets defined in this file along with their dependencies
 
@@ -92,10 +115,21 @@ gtest_discover_tests(MeshTests)
            clutter the debugging process by changing how the code executes.
 
     The other option is --config release
-    
+
+    -clean-first: cleans the build directory before building the targets. 
+                This ensures that any previous build artifacts are removed, 
+                and the build starts from a clean state. 
+                This can be useful when you want to ensure that the build 
+                is not affected by any previous builds or changes in the source code.
+                Without this option, CMake will only rebuild the targets that have 
+                changed since the last build, which can be faster but may not catch 
+                all issues if there are dependencies between targets.
 ]]
 
-# ctest --test-dir build --output-on-failure
+# ctest --test-dir build-gcc --output-on-failure
 #[[
     executes the tests registered with CTest and prints details about failures.
+
+    --verbose flag: see individual test cases and their output, even if they pass. 
 ]]
+
