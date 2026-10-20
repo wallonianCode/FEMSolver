@@ -72,6 +72,12 @@ target_link_libraries(Tri3Tests PRIVATE FEM GTest::gtest_main)
 add_executable(MeshTests tests/MeshTests.cpp)
 target_link_libraries(MeshTests PRIVATE FEM GTest::gmock_main)
 
+add_executable(BoundaryConditionTest tests/BoundaryConditionTest.cpp)
+target_link_libraries(BoundaryConditionTest PRIVATE FEM GTest::gmock_main)
+
+add_executable(LoadConditionTest tests/LoadConditionTest.cpp)
+target_link_libraries(LoadConditionTest PRIVATE FEM GTest::gmock_main)
+
 add_executable(solver src/main.cpp)
 target_link_libraries(solver PRIVATE FEM) #one shared definition of the FEM library is linked to the solver executable
 # Register individual GoogleTest cases with CTest
@@ -87,9 +93,12 @@ include(GoogleTest)
 gtest_discover_tests(NodeTests)
 gtest_discover_tests(Tri3Tests)
 gtest_discover_tests(MeshTests)
+gtest_discover_tests(BoundaryConditionTest)
 
 # cmake -S . -B build
 #[[ 
+    = runs the cmake build-generator
+    
     reads the contents of this file
     identify C++ compiler/build environment
     download and configure GoogleTest (if FetchContent() is used)
@@ -102,9 +111,11 @@ gtest_discover_tests(MeshTests)
         cmake -S . -B build-gcc -G "MinGW Makefiles" 
         -DCMAKE_CXX_COMPILER="C:/msys64/ucrt64/bin/g++.exe"
 
+    S: source directory
+
 ]]
 
-# cmake --build build-gcc --config Debug -
+# cmake --build build-gcc --config Debug
 #[[
     compiles the targets defined in this file along with their dependencies
 
