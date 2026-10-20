@@ -17,6 +17,7 @@ Build directories
 
 build/
 cmake-build-*/
+build-gcc/
 
 ==============================
 
