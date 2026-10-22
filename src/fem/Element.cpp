@@ -1,7 +1,9 @@
 #include "../../include/fem/Element.hpp"
 
-Tri3::Tri3(const size_t id, const size_t node_id1, 
-           const size_t node_id2, const size_t node_id3) : id(id)
+Tri3::Tri3(const size_t id, 
+           const double thickness,
+           const size_t node_id1, 
+           const size_t node_id2, const size_t node_id3) : id(id), thickness(thickness)
 {
     node_ids = {node_id1, node_id2, node_id3};
 }
@@ -10,6 +12,30 @@ Tri3::Tri3(const size_t id, const size_t node_id1,
 bool Tri3::is_valid(const Node& node1, const Node& node2, const Node& node3, const double tolerance)
 {
     return Tri3::quality(node1, node2, node3) > tolerance;
+}
+
+
+const size_t Tri3::get_node_id(const Tri3NodePos& pos) const
+{
+    size_t nodeID;
+    switch (pos)
+    {
+        case Tri3NodePos::first:
+        {
+            nodeID = this->node_ids[0];
+        }
+        case Tri3NodePos::second:
+        {
+            nodeID = this->node_ids[1];
+        }
+        case Tri3NodePos::third:
+        {
+            nodeID = this->node_ids[2];
+        }
+        default:
+            break;
+    }
+    return nodeID;  
 }
 
 
@@ -64,8 +90,6 @@ double Tri3::quality(const Node &node1, const Node &node2, const Node &node3)
     return 2*area / std::pow(*std::max_element(lengths.begin(), lengths.end()), 2);
     //return 4.0 * std::sqrt(3.0) * area / (l1 * l1 + l2 * l2 + l3 * l3);
 }
-
-
 
 
 std::ostream& operator<< (std::ostream& stream, const Tri3& triangle3)
