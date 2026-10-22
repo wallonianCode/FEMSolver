@@ -18,7 +18,6 @@ ElementStiffness::Matrix6d ElementStiffness::get_stiffness_matrix(
 }
   
 
-//TODO check this
 const ElementStiffness::Matrix36d ElementStiffness::calculate_B(
     const Tri3& element, 
     const Mesh& mesh)
