@@ -2,12 +2,12 @@
 #include <stdexcept>
 
 
-#include "../../include/fem/LoadConditions.hpp"
+#include "../../../include/fem/loads/LoadConditions.hpp"
 
 
 void LoadConditions::add_nodal_load(
     const std::size_t node_id,
-    const DofComponent component,
+    const DofComponent& component,
     const double value)
 {
     if (!std::isfinite(value))
@@ -18,7 +18,3 @@ void LoadConditions::add_nodal_load(
 
     loads_.push_back({node_id, component, value});
 }
-
-
-//TODO
-

@@ -35,8 +35,12 @@ add_library(FEM
             src/fem/Element.cpp
             src/fem/Mesh.cpp
             src/fem/boundary/BoundaryCondition.cpp
+            src/fem/loads/LoadConditions.cpp
             src/fem/Material.cpp
-            src/fem/DofManager.cpp)
+            src/fem/DofManager.cpp
+            src/fem/assembly/ElementStiffness.cpp
+            src/fem/assembly/GlobalStiffnessAssembler.cpp
+            )
 
 # Let the FEM implementation files find their headers and propagates the include 
 # directories to the test targets that link against FEM
@@ -72,11 +76,14 @@ target_link_libraries(Tri3Tests PRIVATE FEM GTest::gtest_main)
 add_executable(MeshTests tests/MeshTests.cpp)
 target_link_libraries(MeshTests PRIVATE FEM GTest::gmock_main)
 
-add_executable(BoundaryConditionTest tests/BoundaryConditionTest.cpp)
-target_link_libraries(BoundaryConditionTest PRIVATE FEM GTest::gmock_main)
+add_executable(BoundaryConditionTests tests/BoundaryConditionTests.cpp)
+target_link_libraries(BoundaryConditionTests PRIVATE FEM GTest::gmock_main)
 
-add_executable(LoadConditionTest tests/LoadConditionTest.cpp)
-target_link_libraries(LoadConditionTest PRIVATE FEM GTest::gmock_main)
+add_executable(LoadConditionTests tests/LoadConditionTests.cpp)
+target_link_libraries(LoadConditionTests PRIVATE FEM GTest::gmock_main)
+
+add_executable(ElementStiffnessTests tests/ElementStiffnessTests.cpp)
+target_link_libraries(ElementStiffnessTests PRIVATE FEM GTest::gmock_main)
 
 add_executable(solver src/main.cpp)
 target_link_libraries(solver PRIVATE FEM) #one shared definition of the FEM library is linked to the solver executable
@@ -93,7 +100,9 @@ include(GoogleTest)
 gtest_discover_tests(NodeTests)
 gtest_discover_tests(Tri3Tests)
 gtest_discover_tests(MeshTests)
-gtest_discover_tests(BoundaryConditionTest)
+gtest_discover_tests(BoundaryConditionTests)
+gtest_discover_tests(LoadConditionTests)
+gtest_discover_tests(ElementStiffnessTests)
 
 # cmake -S . -B build
 #[[ 

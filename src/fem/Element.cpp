@@ -15,7 +15,7 @@ bool Tri3::is_valid(const Node& node1, const Node& node2, const Node& node3, con
 }
 
 
-const size_t Tri3::get_node_id(const Tri3NodePos& pos) const
+size_t Tri3::get_node_id(const Tri3NodePos& pos) const
 {
     size_t nodeID;
     switch (pos)
@@ -23,14 +23,17 @@ const size_t Tri3::get_node_id(const Tri3NodePos& pos) const
         case Tri3NodePos::first:
         {
             nodeID = this->node_ids[0];
+            break;
         }
         case Tri3NodePos::second:
         {
             nodeID = this->node_ids[1];
+            break;
         }
         case Tri3NodePos::third:
         {
             nodeID = this->node_ids[2];
+            break;
         }
         default:
             break;

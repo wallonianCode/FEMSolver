@@ -28,7 +28,7 @@ struct Tri3 {
 	friend std::ostream& operator<< (std::ostream& stream, const Tri3& triangle3);
 
 	//get first at pos iPos 
-	const size_t get_node_id(const Tri3NodePos& pos) const;
+	size_t get_node_id(const Tri3NodePos& pos) const;
 	static double get_area(const Node &node1, const Node &node2, const Node &node3);
   private:
   	std::array<std::size_t, 3> node_ids; 

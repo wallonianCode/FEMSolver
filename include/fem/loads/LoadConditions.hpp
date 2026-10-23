@@ -19,7 +19,7 @@ public:
 
     void add_nodal_load(
         const std::size_t node_id,
-        const DofComponent component,
+        const DofComponent& component,
         const double value);
 
     const_iterator begin() const noexcept;

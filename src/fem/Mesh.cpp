@@ -16,10 +16,11 @@ std::size_t Mesh::add_node(const double x, const double y)
 std::size_t Mesh::add_tri3(
     std::size_t n0,
     std::size_t n1,
-    std::size_t n2
+    std::size_t n2,
+    const double thickness
 ) 
 {
-    /*
+    
     if (n0 > nodes_.size())
     {
         throw 
@@ -35,17 +36,17 @@ std::size_t Mesh::add_tri3(
        throw 
        std::invalid_argument("Third argument does not correspond to valid node id: " + n2);
     }
-       */
+       
 
     const std::size_t element_id = elements_.size();
-    elements_.push_back(Tri3(element_id, n0, n1, n2));
+    elements_.push_back(Tri3(element_id, thickness, n0, n1, n2));
     return element_id;
 }
 
 /*********************************************************************************
                             ACCESSORS
  *********************************************************************************/
-const Node& Mesh::node(std::size_t index) const 
+const Node& Mesh::node(const std::size_t index) const 
 {
     if (index >= nodes_.size())
     {
@@ -54,7 +55,7 @@ const Node& Mesh::node(std::size_t index) const
     return nodes_[index];
 }
 
-const Tri3& Mesh::element(std::size_t index) const 
+const Tri3& Mesh::element(const std::size_t index) const 
 {
     if (index >= elements_.size())
     {
@@ -63,10 +64,24 @@ const Tri3& Mesh::element(std::size_t index) const
     return elements_[index];
 }
 
+
+Mesh::const_iterator Mesh::begin() const noexcept
+{
+    return elements_.cbegin();
+}
+
+
+Mesh::const_iterator Mesh::end() const noexcept
+{
+    return elements_.cend();
+}
+
+
 std::size_t Mesh::num_nodes() const 
 {
     return nodes_.size();
 }
+
 
 std::size_t Mesh::num_elements() const 
 {
@@ -77,7 +92,7 @@ std::size_t Mesh::num_elements() const
                             VALIDATION
  *********************************************************************************/
 //TODO test for duplicate node indices in an element
- bool Mesh::validate(std::string& error, double tolerance) const 
+ bool Mesh::validate(std::string& error, const double tolerance) const 
 {
   
    std::ostringstream message(std::ios_base::out);
@@ -103,9 +118,9 @@ std::size_t Mesh::num_elements() const
    for (const Tri3& elem : elements_)
    {
         std::array<std::size_t, 3> key {
-            elem.node_ids[0],
-            elem.node_ids[1],
-            elem.node_ids[2]
+            elem.get_node_id(Tri3NodePos::first),
+            elem.get_node_id(Tri3NodePos::second),
+            elem.get_node_id(Tri3NodePos::third)
         };
 
         std::sort(key.begin(), key.end());
@@ -125,41 +140,39 @@ std::size_t Mesh::num_elements() const
    for (const Tri3& elem : elements_)
     {
         // Validate element connectivity before accessing nodes.
-        for (const std::size_t node_id : elem.node_ids)
-        {  
-            if (node_id >= nodes_.size()) //one element has one node with invalid id
-            {
 
-                message << "Invalid connectivity in " << elem
-                        << ": node index " << node_id
+        const std::array<size_t, 3> node_ids = 
+            {elem.get_node_id(Tri3NodePos::first),
+             elem.get_node_id(Tri3NodePos::second),
+             elem.get_node_id(Tri3NodePos::third)};
+
+        for (auto node_id_it = node_ids.begin(); node_id_it != node_ids.end(); node_id_it++)
+        {
+            if (*node_id_it >= nodes_.size())
+            {
+                message << "Invalid connectivity in " 
+                        << elem
+                        << " node index: " << *node_id_it
                         << " is out of bounds. The mesh contains "
                         << nodes_.size() << " nodes.";
-
                 error = message.str();
-                return false;
+                return false;      
             }
 
-            const Node& node1 = node(node_id);
-
-            if (! Node::is_valid(node1))
-            {        
-                message << "Invalid coordinates in " << elem
-                        << ": " << '\n';
+            if (! Node::is_valid(node(*node_id_it)))
+            {
+                message << "Invalid coordinates in " 
+                    << ": " << '\n';
                 error = message.str();
                 return false;
             }
         }
 
 
-        // Retrieve nodes
-        const Node& n0 = this->node(elem.node_ids[0]);
-        const Node& n1 = this->node(elem.node_ids[1]);
-        const Node& n2 = this->node(elem.node_ids[2]);
-
 
         // Check validity
         // TODO distinguish between triangles with collinear nodes and triangles with coincident nodes
-        if (!Tri3::is_valid(n0, n1, n2, tolerance))
+        if (!Tri3::is_valid(node(node_ids[0]), node(node_ids[1]), node(node_ids[2]), tolerance))
         {
             message << "Invalid geometry in " << elem
                     << ": nodes are collinear or coincident." << '\n';

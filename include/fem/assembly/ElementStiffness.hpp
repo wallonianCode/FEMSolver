@@ -26,6 +26,6 @@ class ElementStiffness
 
     static const Matrix3d calculate_D(const LinearElastic2D& material);
 
-    static const double calculate_area(const Tri3& Element,
-                                       const Mesh& mesh);
+    static double calculate_area(const Tri3& Element,
+                                 const Mesh& mesh);
 };

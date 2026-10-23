@@ -1,5 +1,5 @@
-#include "ElementStiffness"
-
+#include "ElementStiffness.hpp"
+#include "../../../include/fem/DofManager.hpp"
 
 class GlobalStiffnessAssembler
 {
