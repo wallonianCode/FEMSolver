@@ -1,0 +1,1 @@
+A personal C++ finite element library developed to deepen my understanding of numerical simulation software. The project currently focuses on linear two-dimensional finite element analysis, with an emphasis on modular design, mesh management, element stiffness calculations and automated testing.
