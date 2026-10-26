@@ -2,9 +2,9 @@
 #define LIBRARIES_HPP
 
 //windows
-#include "C:\Users\z004ryjh\Desktop\GIT\FEA\FEMSolver\third_party\eigen-5.0.0\Eigen\Dense"
+//#include "C:\Users\z004ryjh\Desktop\GIT\FEA\FEMSolver\third_party\eigen-5.0.0\Eigen\Dense"
 
 //Linux
-//#include <Eigen\Dense>
+#include <Eigen/Dense>
 
 #endif  

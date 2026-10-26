@@ -20,7 +20,7 @@ std::size_t Mesh::add_tri3(
     const double thickness
 ) 
 {
-    
+   
     if (n0 > nodes_.size())
     {
         throw 

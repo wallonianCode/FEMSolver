@@ -18,3 +18,15 @@ void LoadConditions::add_nodal_load(
 
     loads_.push_back({node_id, component, value});
 }
+
+
+LoadConditions::const_iterator LoadConditions::begin() const noexcept
+{
+	return loads_.begin();
+}
+
+
+LoadConditions::const_iterator LoadConditions::end() const noexcept
+{
+	return loads_.end();
+}

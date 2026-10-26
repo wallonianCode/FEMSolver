@@ -10,6 +10,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # supports that extension.
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Find the Eigen3 package
+find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 
 include(FetchContent)
 
@@ -29,7 +31,7 @@ FetchContent_MakeAvailable(googletest)
 # Enables CTest testing support in the build directory
 enable_testing()
 
-# Defining the FEM library target 
+# Tells CMake to build an executable named FEM from those source files.
 add_library(FEM 
             src/fem/Node.cpp
             src/fem/Element.cpp
@@ -42,8 +44,13 @@ add_library(FEM
             src/fem/assembly/GlobalStiffnessAssembler.cpp
             )
 
-# Let the FEM implementation files find their headers and propagates the include 
-# directories to the test targets that link against FEM
+# specifies which libraries a particular target depends on
+# tells cmake to locate the Eigen package
+# Public: dependency propagated to ev. dependent targets
+target_link_libraries(FEM PUBLIC Eigen3::Eigen)
+
+# Let the FEM implementation files find their headers and propagates 
+# the include directories to the test targets that link against FEM
 target_include_directories(FEM PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/fem
@@ -104,7 +111,7 @@ gtest_discover_tests(BoundaryConditionTests)
 gtest_discover_tests(LoadConditionTests)
 gtest_discover_tests(ElementStiffnessTests)
 
-# cmake -S . -B build
+# cmake -S . -B build-gcc
 #[[ 
     = runs the cmake build-generator
     
@@ -151,5 +158,10 @@ gtest_discover_tests(ElementStiffnessTests)
     executes the tests registered with CTest and prints details about failures.
 
     --verbose flag: see individual test cases and their output, even if they pass. 
+]]
+
+# ctest --test-dir build-gcc -R **pattern**
+#[[
+	runs tests defined by **pattern**
 ]]
 

@@ -35,7 +35,7 @@ TEST(ElementStiffnessTests, StiffnessMatrixCorrespondsToAnalyticalSolution)
     expected_matrix << 
         3, 1, -1, -1, -2, 0,
         1, 4.5, 0, -0.5, -1, 1,
-        -1, 0, 1, 0, 0, 0
+        -1, 0, 1, 0, 0, 0,
         -1, -0.5, 0, 0.5, 1, 0,
         -2, -1, 0, 1, 0.5, 0,
         0, -1/q, 0, 0, 0, 1/q; 
