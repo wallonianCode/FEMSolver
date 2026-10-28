@@ -85,7 +85,8 @@ const ElementStiffness::Matrix3d ElementStiffness::calculate_D(
 double ElementStiffness::calculate_area(const Tri3& element,
                                         const Mesh& mesh)
 {
-    return element.get_area(mesh.node(element.get_node_id(Tri3NodePos::first)),
-                            mesh.node(element.get_node_id(Tri3NodePos::second)),
-                            mesh.node(element.get_node_id(Tri3NodePos::third)));
+    return 
+		element.get_area(mesh.node(element.get_node_id(Tri3NodePos::first)),
+                     mesh.node(element.get_node_id(Tri3NodePos::second)),
+                     mesh.node(element.get_node_id(Tri3NodePos::third)));
 }

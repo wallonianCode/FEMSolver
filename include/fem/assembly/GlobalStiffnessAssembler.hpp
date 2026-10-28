@@ -1,3 +1,6 @@
+#ifndef GLOBAL_STIFFNESS_ASSEMBLER_H
+#define GLOBAL_STIFFNESS_ASSEMBLER_H
+
 #include "ElementStiffness.hpp"
 #include "../../../include/fem/DofManager.hpp"
 
@@ -11,3 +14,5 @@ class GlobalStiffnessAssembler
         const LinearElastic2D& material 
     );
 };
+
+#endif

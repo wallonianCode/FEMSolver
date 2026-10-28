@@ -9,7 +9,6 @@ TEST(ElementStiffnessTests, StiffnessMatrixCorrespondsToAnalyticalSolution)
 {
     // 1. Create a mesh with three nodes.
     Mesh mesh;
-    const double q = 1.0/4.0;
     const double element_thickness = 1.0;
     const IsotropicLinearElasticMaterial material = {1, 0};
   
@@ -33,16 +32,16 @@ TEST(ElementStiffnessTests, StiffnessMatrixCorrespondsToAnalyticalSolution)
     // 5. Construct the analytically derived expected matrix.
     ElementStiffness::Matrix6d expected_matrix;
     expected_matrix << 
-        3, 1, -1, -1, -2, 0,
-        1, 4.5, 0, -0.5, -1, 1,
-        -1, 0, 1, 0, 0, 0,
-        -1, -0.5, 0, 0.5, 1, 0,
-        -2, -1, 0, 1, 0.5, 0,
-        0, -1/q, 0, 0, 0, 1/q; 
-    
-    expected_matrix *= q;
+      3.0/4.0,  1.0/4.0, -1.0/4.0, -1.0/4.0, -1.0/2.0,  0.0,
+ 	    1.0/4.0,  9.0/8.0,  0.0,    -1.0/8.0, -1.0/4.0, -1.0,
+ 	   -1.0/4.0,  0.0,      1.0/4.0,  0.0,      0.0,      0.0,
+ 	   -1.0/4.0, -1.0/8.0,  0.0,     1.0/8.0,  1.0/4.0,  0.0,
+ 	   -1.0/2.0, -1.0/4.0,  0.0,     1.0/4.0,  1.0/2.0,  0.0,
+ 	    0.0,     -1.0,      0.0,      0.0,      0.0,      1.0;
     // 6. Compare actual and expected matrices.
-    EXPECT_TRUE(stiffness_matrix.isApprox(expected_matrix, 1e-12));
+    EXPECT_TRUE(stiffness_matrix.isApprox(expected_matrix, 1e-12))
+		<< "Actual stiffness matrix:\n" << stiffness_matrix 
+		<< "\nExpected stiffness matrix:\n" << expected_matrix;
 }
 
 
@@ -70,7 +69,8 @@ TEST(ElementStiffnessTests, StiffnessMatrixIsSymmetric)
         ElementStiffness::get_stiffness_matrix(mesh.element(0),
                                                mesh,
                                                stress_state);
-    EXPECT_TRUE(stiffness_matrix.isApprox(stiffness_matrix.transpose(), 1e-12));
+    EXPECT_TRUE(stiffness_matrix.isApprox(stiffness_matrix.transpose(), 
+		1e-12));
 }
 
 
@@ -107,7 +107,7 @@ TEST(ElementStiffnessTests, RigidBodyMovesProduceZeroInternalForces)
     u_y << 0, 1, 0, 1, 0, 1;
 
     Eigen::Matrix<double, 6, 1> u_rotation;
-    u_rotation << 0, 0, -4, 3, -6, 0;
+    u_rotation << 0, 0, 0, 2, -1, 0;
 
     const Eigen::Matrix<double, 6, 1> f_x =
         stiffness_matrix * u_x;

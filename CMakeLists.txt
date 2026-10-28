@@ -92,6 +92,10 @@ target_link_libraries(LoadConditionTests PRIVATE FEM GTest::gmock_main)
 add_executable(ElementStiffnessTests tests/ElementStiffnessTests.cpp)
 target_link_libraries(ElementStiffnessTests PRIVATE FEM GTest::gmock_main)
 
+add_executable(GlobalStiffnessTests 
+tests/GlobalStiffnessAssemblerTests.cpp)
+target_link_libraries(GlobalStiffnessTests PRIVATE FEM GTest::gmock_main)
+
 add_executable(solver src/main.cpp)
 target_link_libraries(solver PRIVATE FEM) #one shared definition of the FEM library is linked to the solver executable
 # Register individual GoogleTest cases with CTest
@@ -110,6 +114,7 @@ gtest_discover_tests(MeshTests)
 gtest_discover_tests(BoundaryConditionTests)
 gtest_discover_tests(LoadConditionTests)
 gtest_discover_tests(ElementStiffnessTests)
+gtest_discover_tests(GlobalStiffnessTests)
 
 # cmake -S . -B build-gcc
 #[[ 

@@ -1,3 +1,6 @@
+#ifndef ELEMENT_STIFFNESS_HPP
+#define ELEMENT_STIFFNESS_HPP
+
 #include <cmath>
 #include <stdexcept>
 
@@ -29,3 +32,5 @@ class ElementStiffness
     static double calculate_area(const Tri3& Element,
                                  const Mesh& mesh);
 };
+
+#endif
