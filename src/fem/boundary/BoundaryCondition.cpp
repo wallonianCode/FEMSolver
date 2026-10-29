@@ -17,6 +17,9 @@ void BoundaryCondition::add_displacement(
         throw std::invalid_argument(
             "Prescribed displacement must be finite.");
     }
+
+		//TODO check for duplicates
+		//(make use of an std function)
     displacements_.push_back({node_id, component, value});
 }
 
