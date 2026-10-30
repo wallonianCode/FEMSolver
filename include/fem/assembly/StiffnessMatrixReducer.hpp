@@ -40,8 +40,6 @@ public:
         get_reduced_stiffness_matrix(const Eigen::MatrixXd& global_stiffness,
                                      const DofPartition& partition);
     
-
-
 };
 
 

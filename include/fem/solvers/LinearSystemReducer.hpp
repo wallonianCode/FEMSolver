@@ -19,4 +19,20 @@ struct ReducedSystem
 };
 
 
+class LinearSystemReducer
+{
+public:
+    static ReducedSystem get_free_displacement_system(
+        const ReducedStiffnessMatrix& reduced_stiffness,
+        const Eigen::VectorXd& global_force_vector);
+private:
+    static Eigen::VectorXd get_constrained_displacements(
+        const DofPartition& partition);
+
+    static Eigen::VectorXd get_forces_on_free_dofs(
+        const Eigen::VectorXd& global_force_vector,
+        const DofPartition& partition
+    );
+};
+
 #endif

@@ -59,7 +59,9 @@ add_library(FEM
             src/fem/assembly/ElementStiffness.cpp
             src/fem/assembly/GlobalStiffnessAssembler.cpp
             src/fem/boundary/BoundaryConditionsHandler.cpp
+            src/fem/assembly/StiffnessMatrixReducer.cpp
             )
+
 
 # specifies which libraries a particular target depends on
 # tells cmake to locate the Eigen package
@@ -117,6 +119,10 @@ add_executable(BoundaryConditionsHandlerTests
 tests/BoundaryConditionsHandlerTests.cpp)
 target_link_libraries(BoundaryConditionsHandlerTests PRIVATE FEM GTest::gmock_main)
 
+add_executable(StiffnessMatrixReducerTests
+tests/StiffnessMatrixReducerTests.cpp)
+target_link_libraries(StiffnessMatrixReducerTests PRIVATE FEM GTest::gmock_main)
+
 add_executable(solver src/main.cpp)
 target_link_libraries(solver PRIVATE FEM) #one shared definition of the FEM library is linked to the solver executable
 # Register individual GoogleTest cases with CTest
@@ -137,6 +143,7 @@ gtest_discover_tests(LoadConditionTests)
 gtest_discover_tests(ElementStiffnessTests)
 gtest_discover_tests(GlobalStiffnessTests)
 gtest_discover_tests(BoundaryConditionsHandlerTests)
+gtest_discover_tests(StiffnessMatrixReducerTests)
 
 
 # cmake -S . -B build-gcc
