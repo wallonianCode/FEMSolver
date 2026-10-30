@@ -5,6 +5,9 @@
 #include "ConstrainedDof.hpp"
 #include "BoundaryCondition.hpp"
 
+//identifies the constrained DOFs.
+
+
 struct BoundaryConditionsHandler 
 {
 	/**
@@ -14,6 +17,8 @@ struct BoundaryConditionsHandler
 	 */
 	static std::vector<ConstrainedDof> 
 	get_constrained_dofs_vector(const BoundaryCondition& bc);
+
+
 };
 
 #endif
