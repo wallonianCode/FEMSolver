@@ -32,26 +32,36 @@ DofPartition StiffnessMatrixReducer::partition_dofs(
     return partition;
 }
 
-Eigen::MatrixXd StiffnessMatrixReducer::get_Kff(const Eigen::MatrixXd& global_stiffness,
-                                                const DofPartition& partition) 
-{
-    //TODO
-}
 
-Eigen::MatrixXd StiffnessMatrixReducer::get_Kfc(const Eigen::MatrixXd& global_stiffness,
-                                                const DofPartition& partition)
+ReducedStiffnessMatrix 
+StiffnessMatrixReducer::get_reduced_stiffness_matrix(
+    const Eigen::MatrixXd& global_stiffness,
+    const DofPartition& partition)
 {
-    //TODO
-}
+    //dynamically sized, one-dimensional array of one dimension
+    using IndexArray = Eigen::Array<Eigen::Index, Eigen::Dynamic, 1>;
+
+    if (global_stiffness.rows() != global_stiffness.cols())
+        throw std::invalid_argument("Global stiffness matrix must be square.");
+
+    IndexArray free_indices(partition.free_dofs.size()),
+               constrained_indices(partition.constrained_dofs.size());
+
+    for (std::size_t i = 0; i < partition.free_dofs.size(); ++i)
+        free_indices[i] = partition.free_dofs[i];
     
-Eigen::MatrixXd StiffnessMatrixReducer::get_Kcf(const Eigen::MatrixXd& global_stiffness,
-                                                const DofPartition& partition)
-{
-    //TODO
+    for (std::size_t i = 0; i < partition.constrained_dofs.size(); ++i)
+        constrained_indices[i] = partition.constrained_dofs[i].global_dof;
+
+     return ReducedStiffnessMatrix{
+        global_stiffness(free_indices, free_indices),
+        global_stiffness(free_indices, constrained_indices),
+        global_stiffness(constrained_indices, free_indices),
+        global_stiffness(constrained_indices, constrained_indices),
+        partition
+    };
 }
 
-Eigen::MatrixXd StiffnessMatrixReducer::get_Kcc(const Eigen::MatrixXd& global_stiffness,
-                                                const DofPartition& partition)
-{
-    //TODO
-}
+
+    
+

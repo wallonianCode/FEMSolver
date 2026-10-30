@@ -16,6 +16,17 @@ struct DofPartition
 };
 
 
+struct ReducedStiffnessMatrix
+{
+    Eigen::MatrixXd Kff;
+    Eigen::MatrixXd Kfc;
+    Eigen::MatrixXd Kcf;
+    Eigen::MatrixXd Kcc;
+
+    DofPartition dof_partition;
+};
+
+
 class StiffnessMatrixReducer
 {
 public:
@@ -25,18 +36,10 @@ public:
 		const std::vector<ConstrainedDof>& constrained_dofs
 	);
 
-
-    static Eigen::MatrixXd get_Kff(const Eigen::MatrixXd& global_stiffness,
-                                   const DofPartition& partition);
-
-    static Eigen::MatrixXd get_Kfc(const Eigen::MatrixXd& global_stiffness,
-                                   const DofPartition& partition);
+    static ReducedStiffnessMatrix 
+        get_reduced_stiffness_matrix(const Eigen::MatrixXd& global_stiffness,
+                                     const DofPartition& partition);
     
-    static Eigen::MatrixXd get_Kcf(const Eigen::MatrixXd& global_stiffness,
-                                   const DofPartition& partition);
-
-    static Eigen::MatrixXd get_Kcc(const Eigen::MatrixXd& global_stiffness,
-                                   const DofPartition& partition);
 
 
 };
