@@ -12,25 +12,37 @@ void BoundaryCondition::add_displacement(
     const DofComponent component,
     const double value)
 {
+    BoundaryCondition::const_iterator itDuplicataFound;
     if (!std::isfinite(value))
     {
         throw std::invalid_argument(
             "Prescribed displacement must be finite.");
     }
 
-		//TODO check for duplicates
-		//(make use of an std function)
+    //TODO check for duplicates
+    //(make use of an std function)
+    itDuplicataFound = 
+    std::find_if(displacements_.begin(), displacements_.end(), 
+                 [node_id, component](const PrescribedDisplacement& displacement)
+                 {
+                    return node_id == displacement.node_id && 
+                           component == displacement.component;
+                 });
+    if (itDuplicataFound != displacements_.end())
+    {
+        throw std::invalid_argument("A displacement has already been prescribed for this dof.");
+    }
     displacements_.push_back({node_id, component, value});
 }
 
 
-std::vector<PrescribedDisplacement>::const_iterator BoundaryCondition::begin() const noexcept
+BoundaryCondition::const_iterator BoundaryCondition::begin() const noexcept
 {
     return displacements_.cbegin();
 }
 
 
-std::vector<PrescribedDisplacement>::const_iterator BoundaryCondition::end() const noexcept
+BoundaryCondition::const_iterator BoundaryCondition::end() const noexcept
 {
     return displacements_.cend();
 }

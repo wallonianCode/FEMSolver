@@ -8,6 +8,8 @@ struct ConstrainedDof
 {
 	Eigen::Index global_dof;
 	double prescribed_value;
+
+	bool operator== (const ConstrainedDof& other) const;
 };
 
 #endif 

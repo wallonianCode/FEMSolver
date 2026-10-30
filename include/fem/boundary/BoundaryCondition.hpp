@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <vector>
+#include <algorithm>
 
 #include "../DofComponent.hpp"
 

@@ -10,12 +10,27 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # supports that extension.
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Find the Eigen3 package
-find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 
 include(FetchContent)
 
-# Windows runtime settings
+# Find Eigen3 locally; download it if it is not installed.
+find_package(Eigen3 3.4 QUIET NO_MODULE)
+
+if(NOT Eigen3_FOUND)
+    message(STATUS "Eigen3 not found locally. Fetching Eigen3...")
+
+    FetchContent_Declare(
+        Eigen3
+        GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+        GIT_TAG 3.4.0
+        GIT_SHALLOW TRUE
+    )
+
+    FetchContent_MakeAvailable(Eigen3)
+endif()
+
+
+# Windows runtime settings for GoogleTest
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 FetchContent_Declare(
@@ -36,12 +51,14 @@ add_library(FEM
             src/fem/Node.cpp
             src/fem/Element.cpp
             src/fem/Mesh.cpp
+            src/fem/boundary/ConstrainedDof.cpp
             src/fem/boundary/BoundaryCondition.cpp
             src/fem/loads/LoadConditions.cpp
             src/fem/Material.cpp
             src/fem/DofManager.cpp
             src/fem/assembly/ElementStiffness.cpp
             src/fem/assembly/GlobalStiffnessAssembler.cpp
+            src/fem/boundary/BoundaryConditionsHandler.cpp
             )
 
 # specifies which libraries a particular target depends on
@@ -96,6 +113,10 @@ add_executable(GlobalStiffnessTests
 tests/GlobalStiffnessAssemblerTests.cpp)
 target_link_libraries(GlobalStiffnessTests PRIVATE FEM GTest::gmock_main)
 
+add_executable(BoundaryConditionsHandlerTests
+tests/BoundaryConditionsHandlerTests.cpp)
+target_link_libraries(BoundaryConditionsHandlerTests PRIVATE FEM GTest::gmock_main)
+
 add_executable(solver src/main.cpp)
 target_link_libraries(solver PRIVATE FEM) #one shared definition of the FEM library is linked to the solver executable
 # Register individual GoogleTest cases with CTest
@@ -115,6 +136,8 @@ gtest_discover_tests(BoundaryConditionTests)
 gtest_discover_tests(LoadConditionTests)
 gtest_discover_tests(ElementStiffnessTests)
 gtest_discover_tests(GlobalStiffnessTests)
+gtest_discover_tests(BoundaryConditionsHandlerTests)
+
 
 # cmake -S . -B build-gcc
 #[[ 
@@ -134,6 +157,15 @@ gtest_discover_tests(GlobalStiffnessTests)
 
     S: source directory
 
+]]
+
+#[[cmake -S . -B build-gcc `
+    -G "MinGW Makefiles" `
+    -DCMAKE_CXX_COMPILER="C:/msys64/ucrt64/bin/g++.exe" `
+    -DCMAKE_PREFIX_PATH="C:/msys64/ucrt64"
+
+    explicitely tells cmake to make use of the local installation 
+    in msys64 rather than downloading it.
 ]]
 
 # cmake --build build-gcc --config Debug
