@@ -25,6 +25,8 @@ public:
     static ReducedSystem get_free_displacement_system(
         const ReducedStiffnessMatrix& reduced_stiffness,
         const Eigen::VectorXd& global_force_vector);
+
+    
 private:
     static Eigen::VectorXd get_uc(
         const DofPartition& partition);

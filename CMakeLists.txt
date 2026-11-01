@@ -61,6 +61,7 @@ add_library(FEM
             src/fem/boundary/BoundaryConditionsHandler.cpp
             src/fem/assembly/StiffnessMatrixReducer.cpp
             src/fem/solvers/LinearSystemReducer.cpp
+            src/fem/solvers/LinearSystemSolver.cpp
             )
 
 
@@ -128,6 +129,11 @@ add_executable(LinearSystemReducerTests
 tests/LinearSystemReducerTests.cpp)
 target_link_libraries(LinearSystemReducerTests PRIVATE FEM GTest::gmock_main)
 
+
+add_executable(LinearSystemSolverTests 
+tests/LinearSystemSolverTests.cpp)
+target_link_libraries(LinearSystemSolverTests PRIVATE FEM GTest::gmock_main)
+
 add_executable(solver src/main.cpp)
 target_link_libraries(solver PRIVATE FEM) #one shared definition of the FEM library is linked to the solver executable
 # Register individual GoogleTest cases with CTest
@@ -150,6 +156,7 @@ gtest_discover_tests(GlobalStiffnessTests)
 gtest_discover_tests(BoundaryConditionsHandlerTests)
 gtest_discover_tests(StiffnessMatrixReducerTests)
 gtest_discover_tests(LinearSystemReducerTests)
+gtest_discover_tests(LinearSystemSolverTests)
 
 
 # cmake -S . -B build-gcc
