@@ -6,12 +6,22 @@
 ReducedSystem LinearSystemReducer::get_free_displacement_system(
         const ReducedStiffnessMatrix& reduced_stiffness,
         const Eigen::VectorXd& global_force_vector)
-{
+{//Kff*uf = (Ff - Kfc uc)
+    ReducedSystem reduced_system;
+    Eigen::VectorXd reduced_forces_vector; //rhs 
+    //compute the forces vector
     
+    reduced_forces_vector = 
+        get_Ff(global_force_vector, reduced_stiffness.dof_partition) -
+        reduced_stiffness.Kfc * get_uc(reduced_stiffness.dof_partition);
+    
+    return {reduced_stiffness.Kff,
+            reduced_forces_vector,
+            reduced_stiffness.dof_partition};
 }
         
 
-Eigen::VectorXd LinearSystemReducer::get_constrained_displacements(
+Eigen::VectorXd LinearSystemReducer::get_uc(
     const DofPartition& partition)
 {
     Eigen::VectorXd uc(partition.constrained_dofs.size());
@@ -23,7 +33,7 @@ Eigen::VectorXd LinearSystemReducer::get_constrained_displacements(
 }
 
 
-Eigen::VectorXd LinearSystemReducer::get_forces_on_free_dofs(
+Eigen::VectorXd LinearSystemReducer::get_Ff(
         const Eigen::VectorXd& global_force_vector,
         const DofPartition& partition
 )

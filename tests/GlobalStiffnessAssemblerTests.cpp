@@ -33,13 +33,12 @@ TEST(GlobalStiffnessTests, GlobalStiffnessMatrixOneElement)
 
 	element_stiffness = 
 	ElementStiffness::get_stiffness_matrix(mesh.element(0),
-																				 mesh,
-																				 stress_state);
+										   mesh,
+										   stress_state);
 
 	global_stiffness =
 	GlobalStiffnessAssembler::assemble(mesh,
-																		 dof_manager,
-																		 stress_state);
+									   stress_state);
 
 	ASSERT_EQ(global_stiffness.rows(), 6);
 	ASSERT_EQ(global_stiffness.cols(), 6);
@@ -55,7 +54,6 @@ TEST(GlobalStiffnessTests, GlobalStiffnessMatrixTwoElementsTwoCommonNodes)
 	const double thickness = 1.0;
 	const IsotropicLinearElasticMaterial material = {1, 0};
 	const PlaneStress stress_state(material);
-	const DofManager dof_manager;
 
 	// Define the four nodes of a unit square.
 	mesh.add_node(0.0, 0.0); // n0
@@ -71,7 +69,6 @@ TEST(GlobalStiffnessTests, GlobalStiffnessMatrixTwoElementsTwoCommonNodes)
 	const Eigen::MatrixXd global_stiffness =
 			GlobalStiffnessAssembler::assemble(
 					mesh,
-					dof_manager,
 					stress_state);
 
 	// Independently derived reference matrix.
@@ -104,7 +101,6 @@ TEST(GlobalStiffnessTests, GlobalStiffnessMatrixForFourElements)
 	const double thickness = 1.0;
 	const IsotropicLinearElasticMaterial material = {1.0, 0.0};
 	const PlaneStress stress_state(material);
-	const DofManager dof_manager;
 
 	// Bottom row
 	mesh.add_node(0.0, 0.0); // n0
@@ -126,7 +122,7 @@ TEST(GlobalStiffnessTests, GlobalStiffnessMatrixForFourElements)
 
 	const Eigen::MatrixXd global_stiffness =
 			GlobalStiffnessAssembler::assemble(
-					mesh, dof_manager, stress_state);
+					mesh, stress_state);
 
 	Eigen::Matrix<double, 12, 12> expected_stiffness;
 
@@ -163,7 +159,6 @@ TEST(GlobalStiffnessTests, GlobalStiffnessMatrixForDisjointedElements)
 	const double thickness = 1.0;
 	const IsotropicLinearElasticMaterial material = {1.0, 0.0};
 	const PlaneStress stress_state(material);
-	const DofManager dof_manager;
 
 	// First triangle
 	mesh.add_node(0.0, 0.0); // n0
@@ -180,7 +175,7 @@ TEST(GlobalStiffnessTests, GlobalStiffnessMatrixForDisjointedElements)
 
 	const Eigen::MatrixXd global_stiffness =
 			GlobalStiffnessAssembler::assemble(
-					mesh, dof_manager, stress_state);
+					mesh, stress_state);
 
 	// Hard-coded analytical stiffness matrix for either triangle.
 	Eigen::Matrix<double, 6, 6> expected_element_stiffness;

@@ -4,7 +4,6 @@
 
 Eigen::MatrixXd GlobalStiffnessAssembler::assemble(
         const Mesh& mesh,
-        const DofManager& dof_manager,
         const LinearElastic2D& material 
     )
 {
@@ -24,9 +23,9 @@ Eigen::MatrixXd GlobalStiffnessAssembler::assemble(
 
         element_stiffness = ElementStiffness::get_stiffness_matrix(*ci_elem, mesh, material);
 
-        const Eigen::Vector2i dof_node1 = dof_manager.get_dofs_from_node_id(node_id1);
-        const Eigen::Vector2i dof_node2 = dof_manager.get_dofs_from_node_id(node_id2);
-        const Eigen::Vector2i dof_node3 = dof_manager.get_dofs_from_node_id(node_id3);
+        const Eigen::Vector2i dof_node1 = DofManager::get_dofs_from_node_id(node_id1);
+        const Eigen::Vector2i dof_node2 = DofManager::get_dofs_from_node_id(node_id2);
+        const Eigen::Vector2i dof_node3 = DofManager::get_dofs_from_node_id(node_id3);
 
         const std::array<Eigen::Index, 6> global_dofs = {
             dof_node1[0], dof_node1[1],

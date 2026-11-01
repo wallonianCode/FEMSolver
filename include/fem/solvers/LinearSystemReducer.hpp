@@ -26,10 +26,10 @@ public:
         const ReducedStiffnessMatrix& reduced_stiffness,
         const Eigen::VectorXd& global_force_vector);
 private:
-    static Eigen::VectorXd get_constrained_displacements(
+    static Eigen::VectorXd get_uc(
         const DofPartition& partition);
 
-    static Eigen::VectorXd get_forces_on_free_dofs(
+    static Eigen::VectorXd get_Ff(
         const Eigen::VectorXd& global_force_vector,
         const DofPartition& partition
     );
