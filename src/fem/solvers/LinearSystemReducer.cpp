@@ -11,8 +11,6 @@ ReducedSystem LinearSystemReducer::get_free_displacement_system(
 }
         
 
-
-
 Eigen::VectorXd LinearSystemReducer::get_constrained_displacements(
     const DofPartition& partition)
 {
