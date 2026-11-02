@@ -27,10 +27,10 @@ public:
         const Eigen::VectorXd& global_force_vector);
 
     
-private:
+
     static Eigen::VectorXd get_uc(
         const DofPartition& partition);
-
+private:
     static Eigen::VectorXd get_Ff(
         const Eigen::VectorXd& global_force_vector,
         const DofPartition& partition

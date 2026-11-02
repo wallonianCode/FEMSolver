@@ -6,7 +6,8 @@
 class LinearSystemSolver
 {
 public:
-    static Eigen::VectorXd solve_reduced_system(const ReducedSystem& reduced_system);
+    static Eigen::VectorXd 
+    solve_reduced_system(const ReducedSystem& reduced_system);
 };
 
 

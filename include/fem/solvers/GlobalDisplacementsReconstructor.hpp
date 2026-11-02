@@ -6,6 +6,7 @@
 
 class GlobalDisplacementsReconstructor
 {
+public:
     static Eigen::VectorXd 
     get_global_displacements_vector(
         const Eigen::VectorXd& free_displacements,
