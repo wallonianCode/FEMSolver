@@ -6,6 +6,10 @@ Eigen::VectorXd ReactionForceCalculator::get_reaction_forces
      const Eigen::VectorXd& free_displacements,
      const Eigen::VectorXd& forces_on_constrained_dofs)
 {
+         
+    const Eigen::VectorXd uc =
+        LinearSystemReducer::get_uc(reduced_stiffness.dof_partition);
+
     if (!reduced_stiffness.Kff.allFinite() ||
         !reduced_stiffness.Kfc.allFinite() ||
         !reduced_stiffness.Kcf.allFinite() ||
@@ -15,9 +19,6 @@ Eigen::VectorXd ReactionForceCalculator::get_reaction_forces
             "Reduced stiffness matrices must contain only finite values.");
     }
 
-     
-    const Eigen::VectorXd uc =
-        LinearSystemReducer::get_uc(reduced_stiffness.dof_partition);
 
     if (!free_displacements.allFinite() ||
         !forces_on_constrained_dofs.allFinite() ||

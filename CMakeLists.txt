@@ -93,56 +93,56 @@ target_compile_options(FEM PRIVATE
 
 # Defining build targets
 # source code -> object code
-add_executable(NodeTests tests/NodeTests.cpp)
+add_executable(NodeTests tests/unit/NodeTests.cpp)
 # resolves references to GoogleTest's compiled functions and test runner + 
 # to necessary local libraries
 # (link-time dependencies of the target)
 # GTest::gmock_main provides GoogleMock, GoogleTest, and the entry point (main).
 target_link_libraries(NodeTests PRIVATE FEM GTest::gtest_main)
 
-add_executable(Tri3Tests tests/Tri3Tests.cpp)
+add_executable(Tri3Tests tests/unit/Tri3Tests.cpp)
 target_link_libraries(Tri3Tests PRIVATE FEM GTest::gtest_main)
 
-add_executable(MeshTests tests/MeshTests.cpp)
+add_executable(MeshTests tests/unit/MeshTests.cpp)
 target_link_libraries(MeshTests PRIVATE FEM GTest::gmock_main)
 
-add_executable(BoundaryConditionTests tests/BoundaryConditionTests.cpp)
+add_executable(BoundaryConditionTests tests/unit/BoundaryConditionTests.cpp)
 target_link_libraries(BoundaryConditionTests PRIVATE FEM GTest::gmock_main)
 
-add_executable(LoadConditionTests tests/LoadConditionTests.cpp)
+add_executable(LoadConditionTests tests/unit/LoadConditionTests.cpp)
 target_link_libraries(LoadConditionTests PRIVATE FEM GTest::gmock_main)
 
-add_executable(ElementStiffnessTests tests/ElementStiffnessTests.cpp)
+add_executable(ElementStiffnessTests tests/unit/ElementStiffnessTests.cpp)
 target_link_libraries(ElementStiffnessTests PRIVATE FEM GTest::gmock_main)
 
 add_executable(GlobalStiffnessTests 
-tests/GlobalStiffnessAssemblerTests.cpp)
+tests/unit/GlobalStiffnessAssemblerTests.cpp)
 target_link_libraries(GlobalStiffnessTests PRIVATE FEM GTest::gmock_main)
 
 add_executable(BoundaryConditionsHandlerTests
-tests/BoundaryConditionsHandlerTests.cpp)
+tests/unit/BoundaryConditionsHandlerTests.cpp)
 target_link_libraries(BoundaryConditionsHandlerTests PRIVATE FEM GTest::gmock_main)
 
 add_executable(StiffnessMatrixReducerTests
-tests/StiffnessMatrixReducerTests.cpp)
+tests/unit/StiffnessMatrixReducerTests.cpp)
 target_link_libraries(StiffnessMatrixReducerTests PRIVATE FEM GTest::gmock_main)
 
 add_executable(LinearSystemReducerTests 
-tests/LinearSystemReducerTests.cpp)
+tests/unit/LinearSystemReducerTests.cpp)
 target_link_libraries(LinearSystemReducerTests PRIVATE FEM GTest::gmock_main)
 
 
 add_executable(LinearSystemSolverTests 
-tests/LinearSystemSolverTests.cpp)
+tests/unit/LinearSystemSolverTests.cpp)
 target_link_libraries(LinearSystemSolverTests PRIVATE FEM GTest::gmock_main)
 
 
 add_executable(GlobalDisplacementsReconstructorTests
-tests/GlobalDisplacementsReconstructorTests.cpp)
+tests/unit/GlobalDisplacementsReconstructorTests.cpp)
 target_link_libraries(GlobalDisplacementsReconstructorTests PRIVATE FEM GTest::gtest_main)
 
 add_executable(ReactionForceCalculatorTests
-tests/ReactionForceCalculatorTests.cpp)
+tests/unit/ReactionForceCalculatorTests.cpp)
 target_link_libraries(ReactionForceCalculatorTests PRIVATE FEM GTest::gtest_main)
 
 add_executable(solver src/main.cpp)
