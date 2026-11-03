@@ -2,7 +2,7 @@
 #include <limits>
 #include <stdexcept>
 
-#include "../include/fem/solvers/ReactionForceCalculator.hpp"
+#include "../../include/fem/solvers/ReactionForceCalculator.hpp"
 
 /** ---------------------------------------------------------------------
  *                      FINITE-VALUE VALIDATION

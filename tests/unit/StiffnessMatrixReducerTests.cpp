@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "../include/fem/assembly/StiffnessMatrixReducer.hpp"
+#include "../../include/fem/assembly/StiffnessMatrixReducer.hpp"
 
 
 TEST(StiffnessMatrixReducerTests, PartitionNoContraintsDofs)

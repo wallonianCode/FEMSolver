@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../include/fem/loads/LoadConditions.hpp"
+#include "../../include/fem/loads/LoadConditions.hpp"
 
 
 TEST(LoadConditionsTest, AddNodalLoad)

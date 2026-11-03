@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "../include/fem/assembly/ElementStiffness.hpp"
-#include "../include/fem/Material.hpp"
+#include "../../include/fem/assembly/ElementStiffness.hpp"
+#include "../../include/fem/Material.hpp"
 
 
 TEST(ElementStiffnessTests, StiffnessMatrixCorrespondsToAnalyticalSolution)

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "../include/fem/solvers/LinearSystemSolver.hpp"
+#include "../../include/fem/solvers/LinearSystemSolver.hpp"
 
 //class responsability: solving a reduced system, independantly of the 
 //way the system in question was built. 

@@ -5,11 +5,11 @@
 #include <array>
 #include <cstddef>
 
-#include "../include/fem/assembly/GlobalStiffnessAssembler.hpp"
-#include "../include/fem/assembly/ElementStiffness.hpp"
-#include "../include/fem/Material.hpp"
-#include "../include/fem/Mesh.hpp"
-#include "../include/fem/DofManager.hpp"
+#include "../../include/fem/assembly/GlobalStiffnessAssembler.hpp"
+#include "../../include/fem/assembly/ElementStiffness.hpp"
+#include "../../include/fem/Material.hpp"
+#include "../../include/fem/Mesh.hpp"
+#include "../../include/fem/DofManager.hpp"
 
 
 

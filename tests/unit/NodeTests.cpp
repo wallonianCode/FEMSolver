@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../include/fem/Node.hpp"
+#include "../../include/fem/Node.hpp"
 
 #include <limits>
 

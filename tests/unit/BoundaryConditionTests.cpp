@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include  "../include/fem/boundary/BoundaryCondition.hpp"
+#include  "../../include/fem/boundary/BoundaryCondition.hpp"
 
 
 TEST(BoundaryConditionTest, AddDisplacement)

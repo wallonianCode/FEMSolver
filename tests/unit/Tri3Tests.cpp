@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "../include/fem/Node.hpp"
-#include "../include/fem/Element.hpp"
+#include "../../include/fem/Node.hpp"
+#include "../../include/fem/Element.hpp"
 
 const double VERY_LOW_QUALITY = 0.05;
 const double LOW_QUALITY = 0.1;

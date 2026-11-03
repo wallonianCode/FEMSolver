@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "../include/fem/boundary/BoundaryConditionsHandler.hpp"
-#include "../include/fem/solvers/LinearSystemReducer.hpp"
+#include "../../include/fem/boundary/BoundaryConditionsHandler.hpp"
+#include "../../include/fem/solvers/LinearSystemReducer.hpp"
 
 
 TEST(LinearSystemReducerTests, NoConstrainnedDofsNoForcesApplied)

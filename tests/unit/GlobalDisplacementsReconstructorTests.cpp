@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "../include/fem/solvers/GlobalDisplacementsReconstructor.hpp"
+#include "../../include/fem/solvers/GlobalDisplacementsReconstructor.hpp"
 
 
 
