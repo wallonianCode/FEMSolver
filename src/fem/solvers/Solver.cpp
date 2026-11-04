@@ -1,5 +1,5 @@
 #include "../../../include/fem/solvers/Solver.hpp"
-#include "../../../BoundaryConditionsHandler.hpp"
+#include "../../../include/fem/boundary/BoundaryConditionsHandler.hpp"
 
 
 Solver::Solver(const Mesh& mesh, 
@@ -84,9 +84,9 @@ void Solver::compute_reduced_system()
     this->reduced_system_ =
         LinearSystemReducer::get_free_displacement_system(
             this->reduced_stiffness_,
-            //need global forces assembler
-        )
-    //TODO
+            GlobalForceAssembler::assemble(this->mesh_,
+                                           this->load_conditions_)
+        );
 }
 
 
@@ -95,6 +95,7 @@ void Solver::compute_reduced_system()
 Eigen::VectorXd Solver::compute_free_displacements()
 {
     //TODO
+    
 }
 
 

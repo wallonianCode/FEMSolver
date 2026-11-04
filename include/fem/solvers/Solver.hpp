@@ -3,6 +3,7 @@
 
 #include "ReactionForceCalculator.hpp"
 #include "../loads/LoadConditions.hpp"
+#include "../assembly/GlobalForceAssembler.hpp"
 
 struct Result
 {
