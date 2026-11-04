@@ -64,6 +64,8 @@ add_library(FEM
             src/fem/solvers/LinearSystemSolver.cpp
             src/fem/solvers/GlobalDisplacementsReconstructor.cpp
             src/fem/solvers/ReactionForceCalculator.cpp
+            src/fem/loads/LoadedDof.cpp
+            src/fem/loads/LoadConditionsHandler.cpp
             )
 
 
@@ -145,6 +147,10 @@ add_executable(ReactionForceCalculatorTests
 tests/unit/ReactionForceCalculatorTests.cpp)
 target_link_libraries(ReactionForceCalculatorTests PRIVATE FEM GTest::gtest_main)
 
+add_executable(LoadConditionsHandlerTests 
+tests/unit/LoadConditionsHandlerTests.cpp)
+target_link_libraries(LoadConditionsHandlerTests PRIVATE FEM GTest::gtest_main)
+
 add_executable(solver src/main.cpp)
 target_link_libraries(solver PRIVATE FEM) #one shared definition of the FEM library is linked to the solver executable
 # Register individual GoogleTest cases with CTest
@@ -170,6 +176,7 @@ gtest_discover_tests(LinearSystemReducerTests)
 gtest_discover_tests(LinearSystemSolverTests)
 gtest_discover_tests(GlobalDisplacementsReconstructorTests)
 gtest_discover_tests(ReactionForceCalculatorTests)
+gtest_discover_tests(LoadConditionsHandlerTests)
 
 
 # cmake -S . -B build-gcc
