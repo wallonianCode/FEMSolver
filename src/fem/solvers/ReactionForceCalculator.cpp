@@ -4,11 +4,15 @@
 Eigen::VectorXd ReactionForceCalculator::get_reaction_forces
     (const ReducedStiffnessMatrix& reduced_stiffness,
      const Eigen::VectorXd& free_displacements,
-     const Eigen::VectorXd& forces_on_constrained_dofs)
+     const Eigen::VectorXd& global_force_vector)
 {
          
     const Eigen::VectorXd uc =
         LinearSystemReducer::get_uc(reduced_stiffness.dof_partition);
+
+    const Eigen::VectorXd fc = 
+        get_Fc(global_force_vector, reduced_stiffness.dof_partition);
+        
 
     if (!reduced_stiffness.Kff.allFinite() ||
         !reduced_stiffness.Kfc.allFinite() ||
@@ -21,7 +25,7 @@ Eigen::VectorXd ReactionForceCalculator::get_reaction_forces
 
 
     if (!free_displacements.allFinite() ||
-        !forces_on_constrained_dofs.allFinite() ||
+        !global_force_vector.allFinite() ||
         !uc.allFinite())
     {
         throw std::invalid_argument(
@@ -50,7 +54,7 @@ Eigen::VectorXd ReactionForceCalculator::get_reaction_forces
         throw(std::invalid_argument("Kcf rows should match Kcc rows"));
     }
 
-    if (forces_on_constrained_dofs.size() != reduced_stiffness.Kcc.rows())
+    if (fc.size() != reduced_stiffness.Kcc.rows())
     {
         throw std::invalid_argument(
             "Forces on constrained DOFs vector has incompatible size.");
@@ -61,5 +65,25 @@ Eigen::VectorXd ReactionForceCalculator::get_reaction_forces
     //TODO additional tests?
     return reduced_stiffness.Kcf*free_displacements +
            reduced_stiffness.Kcc* uc -
-           forces_on_constrained_dofs;
+           fc;
+}
+
+
+Eigen::VectorXd ReactionForceCalculator::get_Fc(
+    const Eigen::VectorXd& global_force_vector,
+    const DofPartition& partition)
+{
+    Eigen::VectorXd Fc(partition.constrained_dofs.size());
+
+    for (std::size_t i = 0;
+         i < partition.constrained_dofs.size(); ++i)
+    {
+        const Eigen::Index global_dof =
+            partition.constrained_dofs[i].global_dof;
+
+        Fc(static_cast<Eigen::Index>(i)) =
+            global_force_vector(global_dof);
+    }
+
+    return Fc;
 }

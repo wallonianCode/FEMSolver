@@ -11,7 +11,11 @@ public:
     static Eigen::VectorXd get_reaction_forces
     (const ReducedStiffnessMatrix& reduced_stiffness,
      const Eigen::VectorXd& free_displacements,
-     const Eigen::VectorXd& forces_on_constrained_dofs);
+     const Eigen::VectorXd& global_force_vector);
+private:
+    Eigen::VectorXd ReactionForceCalculator::get_Fc(
+    const Eigen::VectorXd& global_force_vector,
+    const DofPartition& partition);
 };
 
 #endif

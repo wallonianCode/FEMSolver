@@ -15,27 +15,25 @@ TEST(ReactionForceCalculatorTests, InfiniteValuesInReducedStiffnessMatrix)
     ReducedStiffnessMatrix reduced_stiffness;
     reduced_stiffness.Kff = Eigen::MatrixXd::Identity(1, 1);
     reduced_stiffness.Kfc = Eigen::MatrixXd::Zero(1, 1);
-    //creates a 1x1 matrix initialized with inf values
     reduced_stiffness.Kcf = Eigen::MatrixXd::Constant(1, 1, inf);
     reduced_stiffness.Kcc = Eigen::MatrixXd::Identity(1, 1);
+
+    reduced_stiffness.dof_partition = {
+        {0},
+        {{1, 0.0}}
+    };
 
     Eigen::VectorXd free_displacements(1);
     free_displacements << 1.0;
 
-    Eigen::VectorXd forces_on_constrained_dofs(1);
-    forces_on_constrained_dofs << 0.0;
-
-    reduced_stiffness.dof_partition =
-    {
-        {0},
-        {{1, 0.0}}
-    };
+    Eigen::VectorXd global_force_vector =
+        Eigen::VectorXd::Zero(2);
 
     EXPECT_THROW(
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs),
+            global_force_vector),
         std::invalid_argument);
 }
 
@@ -50,23 +48,22 @@ TEST(ReactionForceCalculatorTests, NaNValuesInReducedStiffnessMatrix)
     reduced_stiffness.Kcf = Eigen::MatrixXd::Constant(1, 1, nan);
     reduced_stiffness.Kcc = Eigen::MatrixXd::Identity(1, 1);
 
-    Eigen::VectorXd free_displacements(1);
-    free_displacements << 1.0;
-
-    Eigen::VectorXd forces_on_constrained_dofs(1);
-    forces_on_constrained_dofs << 0.0;
-
-    reduced_stiffness.dof_partition =
-    {
+    reduced_stiffness.dof_partition = {
         {0},
         {{1, 0.0}}
     };
+
+    Eigen::VectorXd free_displacements(1);
+    free_displacements << 1.0;
+
+    Eigen::VectorXd global_force_vector =
+        Eigen::VectorXd::Zero(2);
 
     EXPECT_THROW(
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs),
+            global_force_vector),
         std::invalid_argument);
 }
 
@@ -81,23 +78,22 @@ TEST(ReactionForceCalculatorTests, InfiniteValuesInFreeDisplacements)
     reduced_stiffness.Kcf = Eigen::MatrixXd::Identity(1, 1);
     reduced_stiffness.Kcc = Eigen::MatrixXd::Identity(1, 1);
 
-    Eigen::VectorXd free_displacements(1);
-    free_displacements << inf;
-
-    Eigen::VectorXd forces_on_constrained_dofs(1);
-    forces_on_constrained_dofs << 0.0;
-
-    reduced_stiffness.dof_partition =
-    {
+    reduced_stiffness.dof_partition = {
         {0},
         {{1, 0.0}}
     };
+
+    Eigen::VectorXd free_displacements(1);
+    free_displacements << inf;
+
+    Eigen::VectorXd global_force_vector =
+        Eigen::VectorXd::Zero(2);
 
     EXPECT_THROW(
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs),
+            global_force_vector),
         std::invalid_argument);
 }
 
@@ -112,23 +108,22 @@ TEST(ReactionForceCalculatorTests, NaNValuesInFreeDisplacements)
     reduced_stiffness.Kcf = Eigen::MatrixXd::Identity(1, 1);
     reduced_stiffness.Kcc = Eigen::MatrixXd::Identity(1, 1);
 
-    Eigen::VectorXd free_displacements(1);
-    free_displacements << nan;
-
-    Eigen::VectorXd forces_on_constrained_dofs(1);
-    forces_on_constrained_dofs << 0.0;
-
-    reduced_stiffness.dof_partition =
-    {
+    reduced_stiffness.dof_partition = {
         {0},
         {{1, 0.0}}
     };
+
+    Eigen::VectorXd free_displacements(1);
+    free_displacements << nan;
+
+    Eigen::VectorXd global_force_vector =
+        Eigen::VectorXd::Zero(2);
 
     EXPECT_THROW(
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs),
+            global_force_vector),
         std::invalid_argument);
 }
 
@@ -143,28 +138,27 @@ TEST(ReactionForceCalculatorTests, InfiniteValuesInPrescribedDisplacements)
     reduced_stiffness.Kcf = Eigen::MatrixXd::Identity(1, 1);
     reduced_stiffness.Kcc = Eigen::MatrixXd::Identity(1, 1);
 
-    Eigen::VectorXd free_displacements(1);
-    free_displacements << 1.0;
-
-    Eigen::VectorXd forces_on_constrained_dofs(1);
-    forces_on_constrained_dofs << 0.0;
-
-    reduced_stiffness.dof_partition =
-    {
+    reduced_stiffness.dof_partition = {
         {0},
         {{1, inf}}
     };
+
+    Eigen::VectorXd free_displacements(1);
+    free_displacements << 1.0;
+
+    Eigen::VectorXd global_force_vector =
+        Eigen::VectorXd::Zero(2);
 
     EXPECT_THROW(
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs),
+            global_force_vector),
         std::invalid_argument);
 }
 
 
-TEST(ReactionForceCalculatorTests, InfiniteValuesInForcesOnConstrainedDofs)
+TEST(ReactionForceCalculatorTests, InfiniteValuesInGlobalForceVector)
 {
     const double inf = std::numeric_limits<double>::infinity();
 
@@ -174,26 +168,54 @@ TEST(ReactionForceCalculatorTests, InfiniteValuesInForcesOnConstrainedDofs)
     reduced_stiffness.Kcf = Eigen::MatrixXd::Identity(1, 1);
     reduced_stiffness.Kcc = Eigen::MatrixXd::Identity(1, 1);
 
-    Eigen::VectorXd free_displacements(1);
-    free_displacements << 1.0;
-
-    Eigen::VectorXd forces_on_constrained_dofs(1);
-    forces_on_constrained_dofs << inf;
-
-    reduced_stiffness.dof_partition =
-    {
+    reduced_stiffness.dof_partition = {
         {0},
         {{1, 0.0}}
     };
+
+    Eigen::VectorXd free_displacements(1);
+    free_displacements << 1.0;
+
+    Eigen::VectorXd global_force_vector(2);
+    global_force_vector << 0.0, inf;
 
     EXPECT_THROW(
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs),
+            global_force_vector),
         std::invalid_argument);
 }
 
+
+TEST(ReactionForceCalculatorTests, NaNValuesInGlobalForceVector)
+{
+    const double nan = std::numeric_limits<double>::quiet_NaN();
+
+    ReducedStiffnessMatrix reduced_stiffness;
+    reduced_stiffness.Kff = Eigen::MatrixXd::Identity(1, 1);
+    reduced_stiffness.Kfc = Eigen::MatrixXd::Zero(1, 1);
+    reduced_stiffness.Kcf = Eigen::MatrixXd::Identity(1, 1);
+    reduced_stiffness.Kcc = Eigen::MatrixXd::Identity(1, 1);
+
+    reduced_stiffness.dof_partition = {
+        {0},
+        {{1, 0.0}}
+    };
+
+    Eigen::VectorXd free_displacements(1);
+    free_displacements << 1.0;
+
+    Eigen::VectorXd global_force_vector(2);
+    global_force_vector << 0.0, nan;
+
+    EXPECT_THROW(
+        ReactionForceCalculator::get_reaction_forces(
+            reduced_stiffness,
+            free_displacements,
+            global_force_vector),
+        std::invalid_argument);
+}
 
 /** ------------------------------------------------------------------------
  *                       DIMENSION COMPATIBILITY 
@@ -210,8 +232,7 @@ TEST(ReactionForceCalculatorTests, DimensionMismatchKcfFreeDisplacementVector)
     reduced_stiffness.Kcf = Eigen::MatrixXd::Ones(1, 2);
     reduced_stiffness.Kcc = Eigen::MatrixXd::Identity(1, 1);
 
-    reduced_stiffness.dof_partition =
-    {
+    reduced_stiffness.dof_partition = {
         {0, 1},
         {{2, 0.0}}
     };
@@ -219,19 +240,18 @@ TEST(ReactionForceCalculatorTests, DimensionMismatchKcfFreeDisplacementVector)
     Eigen::VectorXd free_displacements(1);
     free_displacements << 1.0;
 
-    Eigen::VectorXd forces_on_constrained_dofs(1);
-    forces_on_constrained_dofs << 0.0;
+    Eigen::VectorXd global_force_vector =
+        Eigen::VectorXd::Zero(3);
 
     EXPECT_THROW(
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs),
+            global_force_vector),
         std::invalid_argument);
 }
 
 
-//Kcc 2x1 matrix
 TEST(ReactionForceCalculatorTests, NonSquareKcc)
 {
     ReducedStiffnessMatrix reduced_stiffness;
@@ -241,8 +261,7 @@ TEST(ReactionForceCalculatorTests, NonSquareKcc)
     reduced_stiffness.Kcf = Eigen::MatrixXd::Ones(2, 1);
     reduced_stiffness.Kcc = Eigen::MatrixXd::Ones(2, 1);
 
-    reduced_stiffness.dof_partition =
-    {
+    reduced_stiffness.dof_partition = {
         {0},
         {
             {1, 0.0},
@@ -253,18 +272,18 @@ TEST(ReactionForceCalculatorTests, NonSquareKcc)
     Eigen::VectorXd free_displacements(1);
     free_displacements << 1.0;
 
-    Eigen::VectorXd forces_on_constrained_dofs(2);
-    forces_on_constrained_dofs << 0.0, 0.0;
+    Eigen::VectorXd global_force_vector =
+        Eigen::VectorXd::Zero(3);
 
     EXPECT_THROW(
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs),
+            global_force_vector),
         std::invalid_argument);
 }
 
-//Kcc 2 col - uc 1 coefficient
+
 TEST(ReactionForceCalculatorTests, SizeMismatchKccUc)
 {
     ReducedStiffnessMatrix reduced_stiffness;
@@ -274,8 +293,7 @@ TEST(ReactionForceCalculatorTests, SizeMismatchKccUc)
     reduced_stiffness.Kcf = Eigen::MatrixXd::Ones(2, 1);
     reduced_stiffness.Kcc = Eigen::MatrixXd::Identity(2, 2);
 
-    reduced_stiffness.dof_partition =
-    {
+    reduced_stiffness.dof_partition = {
         {0},
         {{1, 0.0}}
     };
@@ -283,14 +301,14 @@ TEST(ReactionForceCalculatorTests, SizeMismatchKccUc)
     Eigen::VectorXd free_displacements(1);
     free_displacements << 1.0;
 
-    Eigen::VectorXd forces_on_constrained_dofs(2);
-    forces_on_constrained_dofs << 0.0, 0.0;
+    Eigen::VectorXd global_force_vector =
+        Eigen::VectorXd::Zero(2);
 
     EXPECT_THROW(
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs),
+            global_force_vector),
         std::invalid_argument);
 }
 
@@ -304,8 +322,7 @@ TEST(ReactionForceCalculatorTests, KcfRowsNotEqualToKccRows)
     reduced_stiffness.Kcf = Eigen::MatrixXd::Ones(2, 1);
     reduced_stiffness.Kcc = Eigen::MatrixXd::Identity(1, 1);
 
-    reduced_stiffness.dof_partition =
-    {
+    reduced_stiffness.dof_partition = {
         {0},
         {{1, 0.0}}
     };
@@ -313,19 +330,19 @@ TEST(ReactionForceCalculatorTests, KcfRowsNotEqualToKccRows)
     Eigen::VectorXd free_displacements(1);
     free_displacements << 1.0;
 
-    Eigen::VectorXd forces_on_constrained_dofs(1);
-    forces_on_constrained_dofs << 0.0;
+    Eigen::VectorXd global_force_vector =
+        Eigen::VectorXd::Zero(2);
 
     EXPECT_THROW(
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs),
+            global_force_vector),
         std::invalid_argument);
 }
 
 
-TEST(ReactionForceCalculatorTests, ForcesOnConstrainedDofsSizeMismatchKcc)
+TEST(ReactionForceCalculatorTests, GlobalForceVectorSizeMismatch)
 {
     ReducedStiffnessMatrix reduced_stiffness;
 
@@ -334,8 +351,7 @@ TEST(ReactionForceCalculatorTests, ForcesOnConstrainedDofsSizeMismatchKcc)
     reduced_stiffness.Kcf = Eigen::MatrixXd::Ones(2, 1);
     reduced_stiffness.Kcc = Eigen::MatrixXd::Identity(2, 2);
 
-    reduced_stiffness.dof_partition =
-    {
+    reduced_stiffness.dof_partition = {
         {0},
         {
             {1, 0.0},
@@ -346,14 +362,15 @@ TEST(ReactionForceCalculatorTests, ForcesOnConstrainedDofsSizeMismatchKcc)
     Eigen::VectorXd free_displacements(1);
     free_displacements << 1.0;
 
-    Eigen::VectorXd forces_on_constrained_dofs(1);
-    forces_on_constrained_dofs << 0.0;
+    // The partition describes three global DOFs, but this vector has only two.
+    Eigen::VectorXd global_force_vector =
+        Eigen::VectorXd::Zero(2);
 
     EXPECT_THROW(
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs),
+            global_force_vector),
         std::invalid_argument);
 }
 
@@ -376,8 +393,7 @@ TEST(ReactionForceCalculatorTests, NoFreeDisplacements)
     reduced_stiffness.Kcc << 2.0, 0.0,
                              0.0, 3.0;
 
-    reduced_stiffness.dof_partition =
-    {
+    reduced_stiffness.dof_partition = {
         {},
         {
             {0, 1.0},
@@ -385,10 +401,10 @@ TEST(ReactionForceCalculatorTests, NoFreeDisplacements)
         }
     };
 
-    const Eigen::VectorXd free_displacements;
+    const Eigen::VectorXd free_displacements(0);
 
-    Eigen::VectorXd forces_on_constrained_dofs(2);
-    forces_on_constrained_dofs << 1.0, 1.0;
+    Eigen::VectorXd global_force_vector(2);
+    global_force_vector << 1.0, 1.0;
 
     Eigen::VectorXd expected_reactions(2);
     expected_reactions << 1.0, 5.0;
@@ -397,7 +413,7 @@ TEST(ReactionForceCalculatorTests, NoFreeDisplacements)
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs);
+            global_force_vector);
 
     EXPECT_TRUE(reactions.isApprox(expected_reactions));
 }
@@ -412,8 +428,7 @@ TEST(ReactionForceCalculatorTests, NoPrescribedDisplacements)
     reduced_stiffness.Kcf = Eigen::MatrixXd::Zero(0, 2);
     reduced_stiffness.Kcc = Eigen::MatrixXd(0, 0);
 
-    reduced_stiffness.dof_partition =
-    {
+    reduced_stiffness.dof_partition = {
         {0, 1},
         {}
     };
@@ -421,13 +436,14 @@ TEST(ReactionForceCalculatorTests, NoPrescribedDisplacements)
     Eigen::VectorXd free_displacements(2);
     free_displacements << 1.0, 2.0;
 
-    const Eigen::VectorXd forces_on_constrained_dofs;
+    Eigen::VectorXd global_force_vector(2);
+    global_force_vector << 5.0, 10.0;
 
     const Eigen::VectorXd reactions =
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs);
+            global_force_vector);
 
     EXPECT_EQ(reactions.size(), 0);
 }
@@ -442,8 +458,7 @@ TEST(ReactionForceCalculatorTests, NoForcesOnConstrainedDofs)
     reduced_stiffness.Kcf = Eigen::MatrixXd::Constant(1, 1, 2.0);
     reduced_stiffness.Kcc = Eigen::MatrixXd::Constant(1, 1, 3.0);
 
-    reduced_stiffness.dof_partition =
-    {
+    reduced_stiffness.dof_partition = {
         {0},
         {{1, 1.0}}
     };
@@ -451,8 +466,8 @@ TEST(ReactionForceCalculatorTests, NoForcesOnConstrainedDofs)
     Eigen::VectorXd free_displacements(1);
     free_displacements << 2.0;
 
-    Eigen::VectorXd forces_on_constrained_dofs(1);
-    forces_on_constrained_dofs.setZero();
+    Eigen::VectorXd global_force_vector =
+        Eigen::VectorXd::Zero(2);
 
     Eigen::VectorXd expected_reactions(1);
     expected_reactions << 7.0;
@@ -461,7 +476,7 @@ TEST(ReactionForceCalculatorTests, NoForcesOnConstrainedDofs)
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs);
+            global_force_vector);
 
     EXPECT_TRUE(reactions.isApprox(expected_reactions));
 }
@@ -478,14 +493,14 @@ TEST(ReactionForceCalculatorTests, EmptyReducedStiffness)
 
     reduced_stiffness.dof_partition = {{}, {}};
 
-    const Eigen::VectorXd free_displacements;
-    const Eigen::VectorXd forces_on_constrained_dofs;
+    const Eigen::VectorXd free_displacements(0);
+    const Eigen::VectorXd global_force_vector(0);
 
     const Eigen::VectorXd reactions =
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs);
+            global_force_vector);
 
     EXPECT_EQ(reactions.size(), 0);
 }
@@ -511,8 +526,7 @@ TEST(ReactionForceCalculatorTests, GeneralCase)
     reduced_stiffness.Kcc << 4.0, 0.0,
                              0.0, 5.0;
 
-    reduced_stiffness.dof_partition =
-    {
+    reduced_stiffness.dof_partition = {
         {0, 1},
         {
             {2, 0.5},
@@ -523,8 +537,9 @@ TEST(ReactionForceCalculatorTests, GeneralCase)
     Eigen::VectorXd free_displacements(2);
     free_displacements << 1.0, 2.0;
 
-    Eigen::VectorXd forces_on_constrained_dofs(2);
-    forces_on_constrained_dofs << 1.0, 2.0;
+    // Global DOF ordering: 0, 1, 2, 3.
+    Eigen::VectorXd global_force_vector(4);
+    global_force_vector << 0.0, 0.0, 1.0, 2.0;
 
     Eigen::VectorXd expected_reactions(2);
     expected_reactions << 5.0, 5.0;
@@ -533,7 +548,7 @@ TEST(ReactionForceCalculatorTests, GeneralCase)
         ReactionForceCalculator::get_reaction_forces(
             reduced_stiffness,
             free_displacements,
-            forces_on_constrained_dofs);
+            global_force_vector);
 
     EXPECT_TRUE(reactions.isApprox(expected_reactions));
 }
