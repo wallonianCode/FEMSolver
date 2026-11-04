@@ -13,7 +13,7 @@ public:
      const Eigen::VectorXd& free_displacements,
      const Eigen::VectorXd& global_force_vector);
 private:
-    Eigen::VectorXd ReactionForceCalculator::get_Fc(
+    static Eigen::VectorXd get_Fc(
     const Eigen::VectorXd& global_force_vector,
     const DofPartition& partition);
 };

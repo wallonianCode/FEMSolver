@@ -7,11 +7,24 @@ Eigen::VectorXd ReactionForceCalculator::get_reaction_forces
      const Eigen::VectorXd& global_force_vector)
 {
          
+    const Eigen::Index total_dofs =
+        static_cast<Eigen::Index>(
+            reduced_stiffness.dof_partition.free_dofs.size() + 
+            reduced_stiffness.dof_partition.constrained_dofs.size()
+        );
+
+    if (global_force_vector.size() != total_dofs)
+    {
+        throw std::invalid_argument(
+            "Global force vector size does not match the DOF partition"
+        );
+    }
+
     const Eigen::VectorXd uc =
         LinearSystemReducer::get_uc(reduced_stiffness.dof_partition);
 
     const Eigen::VectorXd fc = 
-        get_Fc(global_force_vector, reduced_stiffness.dof_partition);
+        ReactionForceCalculator::get_Fc(global_force_vector, reduced_stiffness.dof_partition);
         
 
     if (!reduced_stiffness.Kff.allFinite() ||
