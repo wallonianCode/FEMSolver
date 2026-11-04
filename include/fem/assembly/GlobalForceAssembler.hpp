@@ -3,20 +3,18 @@
 
 #include "../loads/LoadConditions.hpp"
 #include "../DofManager.hpp"
+#include "../Mesh.hpp"
 
-struct LoadedDof
-{
-    Eigen::Index global_dof;
-    double value;
-};
 
 
 class GlobalForceAssembler
 {
 public:
-    static std::vector<LoadedDof> assemble(
+    static Eigen::VectorXd assemble(
+        const Mesh& mesh,
         const LoadConditions& load_conditions
     );
+
 };
 
 #endif

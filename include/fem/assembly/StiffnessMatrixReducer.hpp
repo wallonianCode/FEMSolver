@@ -6,14 +6,8 @@
 #include "GlobalStiffnessAssembler.hpp"
 #include "../boundary/ConstrainedDof.hpp"
 #include "../boundary/BoundaryCondition.hpp"
-
+#include "DofPartition.hpp"
 //partitions the DOFs and extract the stiffness matrices.
-
-struct DofPartition
-{
-	std::vector<Eigen::Index> free_dofs;
-	std::vector<ConstrainedDof> constrained_dofs;
-};
 
 
 struct ReducedStiffnessMatrix

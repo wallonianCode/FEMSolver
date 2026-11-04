@@ -29,12 +29,9 @@ public:
     //himself the computation steps order.
     Result solve();
 
-    Eigen::VectorXd get_global_displacements() const;
-    Eigen::VectorXd get_reaction_forces() const;
-
 private:
     void assemble_global_stiffness_matrix();
-    void compute_stiffness_matrix();
+    void compute_reduced_stiffness_matrix();
     void compute_reduced_system();
 
 
@@ -54,10 +51,6 @@ private:
         const std::vector<Eigen::Vector3d>& strains
     );
 
-    // Private calculation helpers
-    void initialize_dof_manager();
-    void compute_reduced_stiffness_matrix();
-    void compute_reduced_system();
 
 
     Mesh mesh_;
