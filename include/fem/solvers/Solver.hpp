@@ -1,6 +1,9 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
+#include <stdexcept>
+#include <memory>
+
 #include "ReactionForceCalculator.hpp"
 #include "../loads/LoadConditions.hpp"
 #include "../assembly/GlobalForceAssembler.hpp"

@@ -1,3 +1,6 @@
+#ifndef LOAD_CONDITIONS_H
+#define LOAD_CONDITIONS_H
+
 #include <cstddef>
 #include <vector>
 #include "../DofComponent.hpp"
@@ -28,3 +31,5 @@ public:
 private:
     std::vector<NodalLoad> loads_;
 };
+
+#endif

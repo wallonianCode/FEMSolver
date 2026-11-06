@@ -65,6 +65,7 @@ add_library(FEM
             src/fem/solvers/GlobalDisplacementsReconstructor.cpp
             src/fem/solvers/ReactionForceCalculator.cpp
             src/fem/assembly/GlobalForceAssembler.cpp
+            src/fem/solvers/Solver.cpp
             )
 
 
@@ -132,11 +133,9 @@ add_executable(LinearSystemReducerTests
 tests/unit/LinearSystemReducerTests.cpp)
 target_link_libraries(LinearSystemReducerTests PRIVATE FEM GTest::gmock_main)
 
-
 add_executable(LinearSystemSolverTests 
 tests/unit/LinearSystemSolverTests.cpp)
 target_link_libraries(LinearSystemSolverTests PRIVATE FEM GTest::gmock_main)
-
 
 add_executable(GlobalDisplacementsReconstructorTests
 tests/unit/GlobalDisplacementsReconstructorTests.cpp)
@@ -149,6 +148,10 @@ target_link_libraries(ReactionForceCalculatorTests PRIVATE FEM GTest::gtest_main
 add_executable(GlobalForceAssemblerTests
 tests/unit/GlobalForceAssemblerTests.cpp)
 target_link_libraries(GlobalForceAssemblerTests PRIVATE FEM GTest::gtest_main)
+
+add_executable(SolverTests tests/integration/SolverTests.cpp)
+target_link_libraries(SolverTests PRIVATE FEM GTest::gtest_main)
+
 
 add_executable(solver src/main.cpp)
 target_link_libraries(solver PRIVATE FEM) #one shared definition of the FEM library is linked to the solver executable
@@ -176,6 +179,7 @@ gtest_discover_tests(LinearSystemSolverTests)
 gtest_discover_tests(GlobalDisplacementsReconstructorTests)
 gtest_discover_tests(ReactionForceCalculatorTests)
 gtest_discover_tests(GlobalForceAssemblerTests)
+gtest_discover_tests(SolverTests)
 
 
 # cmake -S . -B build-gcc

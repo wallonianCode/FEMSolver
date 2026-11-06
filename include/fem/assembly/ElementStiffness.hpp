@@ -23,12 +23,12 @@ class ElementStiffness
                                          const Mesh& mesh,
                                          const LinearElastic2D& material);
   
-  private:
     static const Matrix36d calculate_B(const Tri3& element, 
                                        const Mesh& mesh);
-
+  
     static const Matrix3d calculate_D(const LinearElastic2D& material);
-
+  
+  private:
     static double calculate_area(const Tri3& Element,
                                  const Mesh& mesh);
 };

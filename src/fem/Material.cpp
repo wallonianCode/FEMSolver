@@ -22,8 +22,18 @@ material_(material) {}
 //------------------------------------------ PLAIN STRAIN ------------------------------------
 Eigen::Matrix3d PlaneStrain::get_constitutive_matrix() const
 {
-    double coeff = material_.elasticity_modulus/((1 + material_.poisson_ratio) * (1 - 2*material_.poisson_ratio));
-    Eigen::Matrix3d D {{1, material_.poisson_ratio, 0}, {material_.poisson_ratio, 1, 0}, {0, 0, (1-material_.poisson_ratio)/2}};
+    const double E = material_.elasticity_modulus;
+    const double nu = material_.poisson_ratio;
+
+    const double coeff =
+        E / ((1.0 + nu) * (1.0 - 2.0 * nu));
+
+    Eigen::Matrix3d D;
+    D <<
+        1.0 - nu, nu, 0.0,
+        nu, 1.0 - nu, 0.0,
+        0.0, 0.0, (1.0 - 2.0 * nu) / 2.0;
+
     return coeff * D;
 }
 

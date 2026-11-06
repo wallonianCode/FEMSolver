@@ -13,7 +13,7 @@ Solver::Solver(const Mesh& mesh,
 }
 
 
-void Solver::set_boundary_conditions(const BoundaryCondition& boundary_conditions) : 
+void Solver::set_boundary_conditions(const BoundaryCondition& boundary_conditions)
 {
     this->boundary_conditions_ = boundary_conditions;
 }
@@ -28,11 +28,16 @@ void Solver::set_load_conditions(const LoadConditions& load_conditions)
 Result Solver::solve()
 {
     /**
-     * TODO
-     * There is, however, one consideration: if a calculation throws an exception halfway through solve(), some members may contain newly calculated values while others still contain values from a previous run.
-
-For now, I wouldn't introduce a more complicated architecture just to address this. But eventually, you could consider keeping intermediate results local to solve() and only updating the final result after successful completion.
+     * TODO introduce try/catch block for exceptions. If the process is interrupted,
+     * we need to empty the intermediate results
      */
+    if (mesh_.num_nodes() == 0 || mesh_.num_elements() == 0)
+    {
+        throw std::invalid_argument(
+            "Cannot solve a mesh without nodes and elements."
+        );
+    }
+
     assemble_global_stiffness_matrix();
     compute_partition();
     compute_global_force_vector();
@@ -135,12 +140,57 @@ void Solver::compute_reaction_forces()
 
 void Solver::compute_strains() 
 {
-    //e = du/dx
-    //TODO
+    //for each element of the mesh, extract the 
+    //corresponding nodal displacements out of the 
+    //vector of global displacements.
+    this->strains_.clear();
+    for (const Tri3& elem: this->mesh_)
+    {
+      const size_t n1 = elem.get_node_id(Tri3NodePos::first);
+      const size_t n2 = elem.get_node_id(Tri3NodePos::second);
+      const size_t n3 = elem.get_node_id(Tri3NodePos::third);
+      
+      const Eigen::Vector2i dof1 =
+        DofManager::get_dofs_from_node_id(n1);
+      const Eigen::Vector2i dof2 =
+        DofManager::get_dofs_from_node_id(n2);
+      const Eigen::Vector2i dof3 =
+        DofManager::get_dofs_from_node_id(n3);
+
+      Eigen::Matrix<double, 6, 1> ue;
+      ue << 
+          this->global_displacements_(dof1[0]),
+          this->global_displacements_(dof1[1]),
+          this->global_displacements_(dof2[0]),
+          this->global_displacements_(dof2[1]),
+          this->global_displacements_(dof3[0]),
+          this->global_displacements_(dof3[1]);
+      //multiply this vector of nodal displacements 
+      //by the B matrix of the StiffnessElement class
+      this->strains_.push_back(
+        ElementStiffness::calculate_B(elem, this->mesh_) * 
+        ue
+       );
+    }
 }
 
 
 void Solver::compute_stresses()
 {
-    //TODO
+    if (this->strains_.size() != 
+        this->mesh_.num_elements())
+    {
+        throw(std::runtime_error(
+            "Strain vector does not contain one entry per element."
+        ));
+    }
+    this->stresses_.clear();
+
+    //we assume that each element shares the same material
+    const Eigen::MatrixXd D =  
+        ElementStiffness::calculate_D(*(this->material_));
+    for (const Eigen::Vector3d& strain : this->strains_)
+    {
+      this->stresses_.push_back(D * strain);
+    }
 }
